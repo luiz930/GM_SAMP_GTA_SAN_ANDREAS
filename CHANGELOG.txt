@@ -1,0 +1,1363 @@
+CHANGELOG - Life Simulator BR
+Versao atual: v1.5.0 Stable
+Gamemode: LS RPG 1.5.0
+
+Este arquivo resume os sistemas existentes, arquivos de configuracao e principais
+atualizacoes feitas na GM ate esta versao.
+
+===============================================================================
+RESUMO DA VERSAO v1.5.0 Stable
+===============================================================================
+
+- Empresas e Economia Viva 2.0: empresas agora possuem ramos expandidos e
+  vinculados a profissoes reais: mercado, restaurante/bar, oficina, hotel,
+  fabrica, imobiliaria, escritorio contabil e transportadora.
+- Contratacao empresarial passou a validar a profissao do jogador conforme o
+  ramo da empresa. Contratos fora do ramo sao recusados antes do aceite.
+- Produtividade de profissao passou a alimentar estoque, pedidos e reputacao
+  da empresa do mesmo ramo, sem criar uma economia paralela.
+- /minhaempresa agora abre painel empresarial completo com caixa, funcionarios,
+  estoque, pedidos, impostos, reputacao, folha, divida e lucro diario previsto.
+- Adicionados credito empresarial, fiscalizacao de alvara e regularizacao
+  contabil: /creditoempresa, /fiscalizarempresa e /regularizarempresa.
+- Folha privada continua ligada ao caixa da empresa; salario publico segue
+  separado pela Prefeitura. Contador reduz custo operacional e pode regularizar
+  imposto/alvara.
+- Fechamento Stable online validado em 2026-05-24: smoke remoto OK para versao,
+  saude, integridade, selftest, releasecheck, cmdmodulos e comandos empresariais
+  1.5. Server online preservado em port 7784, gamemode0 nova_gm_1003 1,
+  server_version=v1.5.0 Stable e gamemode_text=LS RPG 1.5.0.
+- Manifesto final do deploy: AMX SHA256
+  B86E36B067DC78C1686F341D84FFC763C60F34CDA924A5193BECAB025D2CAE08;
+  ZIP SHA256 928777F74774D8DFE64596AB5C941CD2F014930AB1D384C9A7DB54661C57B1BB.
+  Backup remoto salvo em backups/remote_deploy_2026-05-24_14-57-28 com
+  pos-restart remoto OK.
+
+===============================================================================
+RESUMO DA VERSAO v1.4.0 Stable
+===============================================================================
+
+Release Retencao e vida urbana 2.0:
+
+- Profissoes v1.4: salarios agora sao diarios, calculados a partir do salario
+  mensal realista por profissao; o menu de emprego ganhou `Fazer bico` e o
+  comando `/bico` para renda extra com cooldown/anti-farm.
+- Ciclo v1.4 iniciado em 2026-05-23 com versao local `v1.4.0 Dev` e
+  `gamemode_text=LS RPG 1.4.0`.
+- Fechamento local 2026-05-23: versao consolidada como `v1.4.0 Stable`,
+  mantendo `LS RPG 1.4.0` e o alias operacional `nova_gm_1003`.
+- Release Retencao e vida urbana 2.0 fechada com Jornada diaria 2.0, Agenda
+  semanal 2.0, Eventos por bairro 2.0 e Progresso urbano 2.0 validados no gate
+  local completo.
+- Criada Jornada diaria 2.0 no GovBR, acessivel por `/jornadadiaria`,
+  `/rotinadiaria`, `/dia`, celular > GovBR e menus de Banco/celular e Servicos
+  publicos.
+- A jornada define perfil automatico do dia para novato, trabalhador,
+  empresario, seguranca publica, servidor publico ou criminoso RP, reaproveitando
+  missoes civis, passe da cidade, score semanal, comandos criminais e paineis ja
+  existentes.
+- O botao `Agir` usa os gates atuais: resgata recompensa de missoes civis quando
+  liberada, guia documentos/banco/emprego por GPS e abre o painel adequado para
+  empresa, servico publico, chamados, missoes criminais ou missoes civis.
+- Nao foi criada nova persistencia de conta neste primeiro incremento; o sistema
+  usa contadores ja salvos para manter compatibilidade com saves do 1.3.
+- Criada Agenda semanal 2.0 no GovBR, acessivel por `/agendasemanal`,
+  `/metassemanais`, `/semanal`, celular > GovBR e menus de Banco/celular e
+  Servicos publicos.
+- A agenda liga a profissao atual a uma categoria de ranking semanal:
+  Trabalhadores, Empresas, Policia ou Cidadaos, com meta numerica, foco por
+  carreira, progresso do Passe da cidade e botao `Agir`.
+- `/rankingsemanal` agora tambem mostra a categoria atual do jogador e o
+  progresso da agenda semanal, unindo competicao online e objetivo pessoal.
+- Assim como a jornada diaria, a agenda semanal reaproveita `pWeekly*Score`,
+  Passe da cidade e os paineis de trabalho/empresa/servico publico existentes,
+  sem criar persistencia paralela.
+- Criados Eventos por bairro 2.0 no GovBR, acessiveis por `/bairros`,
+  `/eventosbairro`, `/metabairro`, celular > GovBR e menus principais.
+- A nova tela traduz o evento urbano atual em regiao ativa, meta leve, acao
+  sugerida e GPS quando existe local correspondente, reaproveitando
+  `gCityEventType`, bonus de profissao, estoque, blitz, hospital, policia e
+  zona de guerra sem criar outro sistema paralelo.
+- Criado Progresso urbano 2.0 no GovBR, acessivel por `/progressourbano`,
+  `/reputacaourbana`, `/urbano`, celular > GovBR e menus principais.
+- A tela fecha reputacao por area em Trabalho, Economia, Seguranca, Civico e
+  Comunidade usando `pCityPass*`, `pWeekly*Score`, missoes diarias, score
+  cidadao, historico bancario, conquistas, login streak, documentos e
+  atendimentos publicos ja salvos na conta.
+
+===============================================================================
+RESUMO DA VERSAO v1.3.0 Stable
+===============================================================================
+
+Release Justica, provas e BO avancado:
+
+- Fechamento local 2026-05-23: gate final `LIBERADO` com auditoria estatica,
+  build, deep audit sem avisos, boot test, check pos-restart, hashes,
+  `server.cfg`, `server_info.txt`, `crashinfo.txt` e `server_log.txt`.
+- AMX antigos da propria GM foram arquivados em `backups/obsolete_amx`, mantendo
+  `gamemodes` somente com a GM ativa e o alias de release esperado.
+- Pacote local final gerado pelo gate de fechamento em `deploy/`.
+- Versao ativa sincronizada para v1.3.0 Stable, mantendo
+  nova_gm_1003.amx como alias operacional no server.cfg.
+- Entregador recebeu base 2.0: rotas curtas, medias e longas, prazo por
+  entrega, falha por atraso, bonus por tamanho da rota e XP extra integrado ao
+  sistema atual de progressao, sequencia e anti-farm.
+- Entregador 2.0 foi fechado com tipos de pacote, coleta antes da entrega,
+  chance de endereco errado, avaliacao do cliente, impacto leve no estoque do
+  mercado/empresas e ranking diario por /rankingentregas.
+- Taxista recebeu base 2.0 com corridas curtas, medias e longas, passageiro
+  comum/VIP/turista/apressado/alterado, taximetro automatico por rota, bonus
+  por passageiro, avaliacao no fim da corrida, cancelamento por batidas em
+  passageiros sensiveis e ranking diario por /rankingtaxi.
+- Mecanico recebeu base 2.0 com chamados curtos, medios e longos, diagnostico
+  de motor/pneu/lataria/bateria/guincho, pecas consumidas, orcamento do
+  atendimento, bonus por complexidade, avaliacao do cliente e ranking diario
+  por /rankingmecanico.
+- BO agora aceita descricao pelo comando /boletim [descricao] e grava auditoria
+  em justice_cases.txt alem do log de punicoes.
+- /prova [id] [descricao] anexa prova/pericia ativa ao caso, salva auditoria em
+  justice_evidence.txt e alimenta a decisao judicial.
+- /mandado [id] [motivo] passa a exigir prova/pericia ou procurado ativo para
+  policiais comuns, evitando mandado sem lastro; staff pode fazer override.
+- /sentenciar exige prova ou mandado ativo para juiz comum, calcula agravante
+  por provas/mandados e limpa o caso ativo apos a sentenca.
+- Criado /arquivarcaso [id] [motivo] para policia, juiz ou staff encerrar caso
+  sem sentenca quando a investigacao nao se sustenta.
+- /casos, /justica e /debugplayer agora mostram provas e mandados ativos.
+- Blindagem de release reforcada em 2026-05-22: server_info padronizado com
+  gamemode_text=LS RPG 1.3.0, server.cfg local voltou para nova_gm, pacote
+  mantem alias nova_gm_1003 e o build valida arquivos criticos antes de gerar
+  o ZIP.
+- Deploy FTP padronizado para sexta-feira as 19:00 BRT; o script bloqueia
+  deploy fora desse horario, salvo uso consciente de -ForceDeploy.
+- Criado gate pre-deploy, check remoto pos-deploy reforcado, manifesto de
+  rollback por deploy, politica de RCON forte, limpeza de pacotes antigos e
+  checklist operacional `CHECKLIST_DEPLOY_19H.md`.
+- /abordagem [id] ficou restrito a cargos policiais; juiz e staff nao recebem
+  comandos de abordagem/revista/ficha policial. Seguranca privada fica limitada
+  a abordagem basica sem ficha/revista.
+- Policia Judicial automatica criada por detector de area: Prefeitura e area
+  judicial alertam policiais online quando player entra com arma irregular,
+  drogas/ilicitos, procurado ou tornozeleira ativa.
+- Sistema criminal RP criado com faccoes ficticias, campos rurais, laboratorio,
+  venda de risco, itens ilegais abstratos, dinheiro sujo, roubo de ATM, banco,
+  veiculo e ataque RP controlado a unidade policial com wanted, alerta policial,
+  cooldown por player/faccao, limite de ganho por hora e log em crime_log.txt.
+- Sistema criminal RP ampliado com lista de missoes, pontos criminais, roubo de
+  loja, roubo de carga, compra rural de semente ilegal, lavagem RP abstrata,
+  denuncia civil, apreensao policial de ilicitos, crimeinfo e rank automatico
+  por respeito.
+- Hotfix comandos policiais: `/revistar`, `/ficha`, `/prender`, `/crimes`,
+  `/procurados` e comandos de abordagem agora entram em rota direta protegida e
+  foram adicionados aos comandos criticos do gate para evitar unknown command.
+- Auditoria de comandos reforcada: o gate agora compara comandos declarados nos
+  handlers com o roteador direto, bloqueando comando policial/criminal sem
+  `Dispatch_IsPoliceCommand` ou `Dispatch_IsCrimeCommand`, alem de exigir que
+  comandos criticos aparecam no autoteste `/testarcomandos`.
+
+===============================================================================
+RESUMO DA VERSAO v1.2.0 - Economia e empresas profundas
+===============================================================================
+
+Release Economia profunda:
+
+- Empresas ganharam fechamento operacional v1.2 com folha, agua, luz, estoque,
+  pedidos, funcionarios, tipo de empresa, local fisico e efeitos de obras
+  publicas de energia.
+- /fechamentoempresa gera a conta operacional da empresa; /pagarcontaempresa
+  quita pelo caixa ou banco e converte parte em arrecadacao publica.
+- /relatorioempresa mostra auditoria economica com saude financeira, cadeia de
+  mercado, demanda, risco, estoque, endereco e limite de contrato.
+- business_economy.txt registra snapshots de empresa, estoque, divida,
+  demanda, contas operacionais e impacto de mercado.
+- /empresa ganhou acoes novas para fechamento, pagamento de conta operacional e
+  relatorio profundo sem remover os comandos antigos.
+- build_deploy_check.ps1 agora valida e empacota arquivos de auditoria da
+  economia e da justica antes de gerar o pacote.
+
+===============================================================================
+RESUMO DA VERSAO v1.1.0 Stable - Cidade Viva
+===============================================================================
+
+Release Cidade Viva:
+
+- Versao sincronizada para v1.1.0 Stable - Cidade Viva, mantendo o alias
+  operacional nova_gm_1001.amx no server.cfg e no pacote de deploy.
+- Criada Central de Chamados 190/192/193 integrada ao celular/GovBR, com
+  chamados de policia, SAMU, bombeiro e guincho aceitos por profissionais em
+  expediente.
+- Chamados agora geram ocorrencia real no mapa, checkpoint para o profissional
+  e resolucao automatica por NPC quando nenhum servidor aceita dentro do prazo.
+- Eventos automaticos da cidade passaram a alimentar chamados reais para
+  profissoes certas, deixando acidente, incendio, apagao e ocorrencias urbanas
+  conectados ao RP.
+- Bombeiros receberam missoes de fogo real com cenas aleatorias de veiculo,
+  casa, comercio e areas publicas, com objetos de fogo/fumaca e desbloqueio por
+  progressao.
+- /ajuda foi expandido para cobrir comandos novos e antigos de profissao,
+  incluindo PRF, blitz, chamados, bombeiro, financas publicas e ferramentas de
+  staff.
+- Cambio manual removido da experiencia padrao dos veiculos; eletricos seguem
+  usando bateria e carros comuns ficam em automatico para reduzir quebra de
+  jogabilidade.
+- Icones do mapa passaram a ser gerenciados por distancia dinamica de 600m,
+  reduzindo saturacao do minimapa sem esconder pontos proximos importantes.
+- Sistemas de empresas, imoveis, energia/agua, IPTU/IPVA, celular, painel de
+  saude da GM e limpeza operacional ficaram preparados para a proxima camada
+  economica compravel e auditavel.
+- Roadmap oficial registrado e depois entregue nas releases v1.2.0 e v1.3.0.
+
+===============================================================================
+RESUMO DA VERSAO v1.0.0 Stable
+===============================================================================
+
+Release estavel:
+
+- Hotfix local v1.0: concessionaria recebeu tres carros eletricos
+  (E-Compacto Volt, E-Sedan Urbano e E-Sport GT), usando bateria no mesmo
+  medidor de combustivel salvo do veiculo.
+- Hotfix local v1.0: criados pontos de recarga eletrica em postos, delegacias
+  e garagem residencial do player, com /recarregar, /recarga e
+  /carregarbateria.
+- Hotfix local v1.0: veiculos eletricos mostram bateria, custam menos por
+  ponto de recarga e podem ser recarregados tambem via /abastecer quando
+  estiverem em posto.
+- Hotfix local v1.0: criado cambio manual para modelos selecionados; Y sobe
+  marcha, N reduz, /cambio ou /marcha mostra status e /marcha +/- troca por
+  comando.
+- Hotfix local v1.0: marcha errada agora tem consequencia RP: motor apaga em
+  marcha alta parado/baixo giro e corta se insistir em marcha baixa em alta
+  velocidade.
+- Versao final sincronizada para v1.0.0 Stable, com alias operacional
+  nova_gm_1001.amx.
+- /releasecheck agora e o gate oficial da release estavel: a linha v1.0 so
+  mostra LIBERADO se todos os marcos v0.4 ate v0.9 estiverem OK.
+- Alem dos marcos tecnicos, a v1.0 exige checklist completo rodado no servidor
+  ativo: /versao, /atualizacao, /saudegm, /selftestgm, /perf, /logsstaff,
+  /painelstaff, /antiabuso e /debugplayer [id].
+- /versao mostra o progresso do checklist v1.0, ajudando a staff a confirmar
+  se o pos-deploy realmente foi executado no servidor.
+- O gate v1.0 valida server_info sincronizado, arquivos obrigatorios, logs,
+  timers, fila dirty, dinheiro/banco, economia, profissoes, GovBR, servicos
+  publicos e paineis operacionais antes de liberar o release.
+- Hotfix v1.0: /ajuda staff, /ajuda comandos admin, /ajudaadmin e
+  /comandosadmin agora usam a mesma validacao de staff e avisam o cargo atual
+  quando o jogador nao tem permissao, em vez de parecer que a dialog falhou.
+- Hotfix v1.0: a lista de comandos do /ajuda agora mostra informacao e reabre
+  a categoria em vez de tentar executar o comando selecionado e fechar a tela.
+- Hotfix v1.0: as categorias do /ajuda passaram a abrir como tela de leitura
+  com botoes Voltar/Fechar, evitando que clicar em qualquer comando feche a
+  dialog sem feedback.
+- Hotfix v1.0: o /ajuda agora usa lista simples na primeira tela e paginas
+  curtas de 10 comandos na segunda tela, evitando estouro de texto/dialog ao
+  escolher categorias grandes.
+- Hotfix v1.0: removido o cabecalho selecionavel da primeira tela do /ajuda e
+  abertura da segunda tela passou a ser deferida por timer curto, evitando que
+  o cliente feche a dialog ao trocar de tela.
+- Hotfix v1.0: /ajuda foi refeito do zero com IDs novos 22080/22081, categoria
+  por lista simples e segunda tela curta por switch fixo, sem paginacao, sem
+  timer e sem estado antigo de comando.
+- Hotfix v1.0: o /menu limpa estado antigo por jogador antes de abrir e so
+  injeta a categoria/comandos Staff quando a conta carregada tem admin >= 1.
+- Hotfix v1.0: comandos staff/admin/dono agora validam somente o campo admin
+  salvo no arquivo da conta do jogador, sem depender de acesso RCON.
+- Hotfix v1.0: seguranca publica expandida com PRF, Policia Federal, Policia
+  Civil e Policia Penal, cada uma com QG em Los Santos, rota de expediente,
+  viaturas fixas e permissao nos fluxos policiais existentes.
+- Hotfix v1.0: policiais e segurancas agora recebem em expediente uma pistola
+  pessoal, duas armas de servico e colete; ao sair do expediente, o equipamento
+  de servico e removido e o anti-cheat so aceita essas armas durante servico.
+- Hotfix v1.0: servicos publicos ganharam ocorrencias PvE com NPC, veiculo e
+  objetos por cargo: bombeiro atende incendio, Policia Civil pericia homicidio,
+  PF investiga desvio na Prefeitura, PRF aborda carga ilegal, Policia Penal
+  faz custodia, juiz julga audiencia e saude atende paciente NPC.
+- Hotfix v1.0: criado /missaopublica, tambem acessivel pelo /servicospublicos
+  e /menu, exigindo expediente ativo e aplicando cooldown, XP, pagamento, passe
+  da cidade e logs de conclusao.
+- Hotfix v1.0: criado /constituicao com direitos dos players, deveres, crimes,
+  instituicoes publicas e penalidades de RP da cidade.
+- Hotfix v1.0: QG da PRF movido para a rodovia em 1428.0861 -964.7896
+  37.0835, com viaturas nas posicoes 1422.9353 -952.1232 e 1422.6719
+  -955.6858. A barreira fixa foi removida e ficou apenas o aviso 3D
+  "POSTO DA PRF / DIMINUA A VELOCIDADE" na rua.
+- Hotfix v1.0: pacote de NPCs ambientes ativado com maxnpc 8, quatro
+  pedestres andando por rotas gravadas e quatro carros civis dirigidos por NPC
+  em Los Santos. A GM agora conecta os NPCs por ConnectNPC, ignora login/HUD
+  para eles, reserva slots e mostra o total em /saudegm.
+- Hotfix v1.0: NPCs ambientes expandidos para 20 slots, com mais 12 pedestres
+  espalhados em pontos de servico de Los Santos, rota da Prefeitura refeita em
+  solo plano, /abordar pausando NPC por ordem policial e IDs acima da cabeca
+  visiveis para seguranca publica/staff.
+- Hotfix v1.0: rotas on-foot dos NPCs regravadas com frames curtos, direcao
+  correta e input real de caminhada, removendo o efeito de flutuar/deslizar.
+  Ao receber /abordar, o NPC levanta as maos e depois retoma a rota.
+- Hotfix v1.0: comportamento dos pedestres ajustado para caminhada real, sem
+  corrida, com rotas individuais de ida e volta em vez de todos girarem em
+  circulos no mesmo ponto.
+- Hotfix v1.0: cada NPC ambiente agora usa um npcmode proprio fixado na sua
+  rota, evitando que todos caiam no mesmo percurso. Pedestres tambem ganharam
+  pausas independentes para celular, conversa, observacao e aceno, sem andar
+  em bando.
+- Hotfix v1.0: fluxo dos NPCs motoristas corrigido. Os carros dos NPCs agora
+  nascem antes dos demais veiculos para manter IDs fixos, as gravacoes de
+  motorista usam IDs 1 a 4, e um watchdog recoloca/reinicia o NPC se ele sair
+  do banco do motorista, ficar parado ou perder o veiculo.
+- Hotfix v1.0: codigo penal integrado a /constituicao e /crimes, com IDs de
+  crime, artigo, multa base e pena em minutos para a policia escolher antes de
+  prender.
+- Hotfix v1.0: /algemar, /desalgemar e /prender [id] [crime_id] agora funcionam
+  para players e NPCs; prisao tem minimo de 10 minutos, contador no HUD e log
+  de punicao com crime aplicado.
+- Hotfix v1.0: custodia corrigida na delegacia. Players e NPCs presos agora
+  vao para as celas internas reais da LSPD, e NPC preso para rota/veiculo,
+  recebe slot proprio na cela e permanece visivel ate o tempo acabar ou ser
+  liberado por /soltar.
+- Hotfix v1.0: /constituicao e /leis agora abrem a mesma dialog em formato de
+  lista, com artigos, direitos, instituicoes, crimes, penas e comandos de
+  consulta para novos jogadores entenderem as regras da cidade.
+- Hotfix v1.0: tutorial inicial expandido para cobrir menu, GPS, GovBR, banco,
+  empregos, DETRAN, empresas, imoveis, saude, policia, justica, eventos e NPCs.
+  A conclusao agora grava tutorial_completed=1 no arquivo da conta; jogadores
+  antigos sao migrados como ja concluidos para nao receber popup novo.
+- Hotfix v1.0: multas de transito foram recalibradas para a tabela CTB real:
+  leve $88/3 pts, media $130/4 pts, grave $195/5 pts, gravissima $293/7 pts,
+  com multiplicadores 2x, 3x, 5x, 10x, 20x e 60x ate o teto de $17608.
+  Radar, blitz, /multa e /multar agora usam gravidade/multiplicador em vez de valores
+  livres ou formulas antigas pesadas, e os pontos aparecem no GovBR/DETRAN.
+- Hotfix v1.0: criado catalogo operacional CTB em /multa [id]. O policial
+  escolhe a infracao pronta por artigo, com gravidade, multiplicador, valor e
+  pontos; a lista e paginada e mantem /multar [id] [gravidade] [mult] como
+  atalho manual.
+- Hotfix v1.0: separados os comandos de multa: /multa [id] abre a dialog do
+  catalogo CTB, enquanto /multar [id] [gravidade] [mult] fica apenas para multa
+  manual, evitando ambiguidade no roteamento de comandos.
+- Hotfix v1.0: /multa foi simplificado para aplicacao direta por numero:
+  /multa [id] [numero]. Sem numero, o comando mostra no chat os codigos CTB
+  principais e o intervalo valido; a dialog antiga continua isolada do fluxo.
+- Hotfix v1.0: saidas dos postos de trabalho reforcadas. Todos os interiores
+  automaticos de trabalho agora aceitam ENTER ou /sair no ponto de saida, a
+  saida por aproximacao ficou mais tolerante e /saudegm audita pendencias.
+- Hotfix v1.0: alias operacional atualizado para nova_gm_1001.amx para permitir
+  deploy sem sobrescrever o AMX que esta carregado pelo servidor.
+- Hotfix v1.0: /revistar foi roteado diretamente no OnPlayerCommandText e a
+  dialog de revista ganhou limite seguro de linhas/tamanho para evitar unknown
+  command e instabilidade ao abrir inventario/armas.
+- Hotfix v1.0: conexao dos NPCs ambientes passou a ser escalonada em fila, em
+  vez de conectar 20 NPCs no mesmo segundo, reduzindo lost connection durante
+  entrada do player e uso rapido de comandos.
+- Hotfix v1.0: auditoria preventiva de crash reforcou callbacks contra NPCs,
+  killerid invalido e respostas de dialogs antes do login; dialogs da Economia
+  2.0 tambem passaram a voltar pela rota correta do Life_HandleDialog.
+- Hotfix v1.0: NPCs ambientes agora geram ocorrencias criminais automaticas:
+  roubo a banco, posto e conveniencia, agressao, fraude na Prefeitura, fuga em
+  veiculo roubado, descaminho e transporte de drogas. Eles recebem estrelas,
+  aparecem no novo /procurados junto com players procurados e seguem os fluxos
+  de /abordar, /revistar, /algemar e /prender.
+- Depois de reiniciar a GM no servidor, rode o checklist in-game e confira
+  /releasecheck. Se faltar comando, a tela informa o item pendente.
+
+===============================================================================
+RESUMO DA VERSAO v0.9.0 Beta
+===============================================================================
+
+Beta final: bugs, performance, logs e paineis staff:
+
+- Timers criticos agora registram metricas reais de execucao: HUD, Fuel e Radar
+  gravam ultimo tempo, maior tempo, players/veiculos escaneados, acoes efetivas,
+  quantidade de ciclos e ciclos lentos.
+- Criado painel /perf, tambem acessivel por /performance, /laggm e /timersgm,
+  para staff acompanhar risco de lag, fila dirty/autosave, players, veiculos e
+  radares sem abrir arquivo no servidor.
+- Quando um timer passa de 60 ms, a GM registra PERF_TIMER em
+  scriptfiles/log_admin_actions.txt com cooldown anti-spam de 5 minutos.
+- /statusserver e /saudegm passaram a exibir as metricas dos timers e o risco
+  operacional de performance.
+- Criado /logsstaff, /logsop e /logsgm com ultimos registros por categoria:
+  admin/staff, dinheiro/banco, punicoes/justica, contratos/empresas, seguranca,
+  bugs e VIP.
+- /painelstaff e /antiabuso agora mostram ultimos logs de dinheiro, contrato e
+  punicao, alem do risco de performance, para investigar antes de agir.
+- /releasecheck ficou mais exigente no gate v0.9: valida timers, fila dirty,
+  arquivos obrigatorios, logs operacionais e risco dos timers antes de liberar
+  o beta operacional.
+- Versao operacional sincronizada para v0.9.0 Beta e alias de release
+  nova_gm_0900.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.8.0 Alpha
+===============================================================================
+
+Policia, justica, DETRAN, hospital e prefeitura:
+
+- Criada a central /servicospublicos, tambem acessivel por /servicos e pelo
+  GovBR do celular, reunindo policia, justica, DETRAN, hospital/SAMU,
+  impostos, orcamento e licitacoes em uma tela com status por area.
+- Prefeitura ganhou atalhos diretos para impostos, orcamento/licitacoes e
+  servicos publicos, mantendo dialog seguro por array de acao por jogador.
+- Policia ganhou /prender [id] e /soltar [id] com validacao de cargo, alvo,
+  proximidade, procurado/caso judicial/tornozeleira e log em punicoes.
+- Fianca passou a registrar motivo financeiro especifico police_bail, deixando
+  auditoria de dinheiro mais clara.
+- O painel de servicos publicos mostra pendencias criticas de prisao/hospital,
+  casos judiciais, tornozeleira, IPVA/vistoria/patio, ferimentos/tratamento,
+  plano de saude, impostos, arrecadacao e rota presencial mais urgente.
+- /releasecheck passou a medir a v0.8 por timers de policia/radar, log de
+  punicoes, risco de fluxo preso/hospital, pendencias DETRAN, saude, tornozeleira
+  e acoes publicas acumuladas.
+- Versao operacional sincronizada para v0.8.0 Alpha e alias de release
+  nova_gm_0800.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.7.0 Alpha
+===============================================================================
+
+GovBR, primeira jornada, documentos e proximos passos:
+
+- GovBR ganhou uma primeira jornada oficial com progresso por etapa:
+  documentos, banco, emprego, primeiro servico, veiculo, DETRAN, moradia,
+  missoes civis e reputacao cidada.
+- Criados dialogos de /jornada e /proximopasso, tambem acessiveis pelo app
+  GovBR no celular, com acao direta para GPS, documentos, missoes ou status
+  cidadao conforme a pendencia atual.
+- A central /govbr passou a mostrar progresso da jornada, conta/emprego,
+  alertas de documentos, notificacoes e o proximo passo calculado pela mesma
+  regra usada no comando e no celular.
+- Notificacoes GovBR agora avisam banco pendente, emprego pendente, primeira
+  jornada, documentos/licencas/seguro/IPVA em alerta, boletos, missoes,
+  eventos, zona de guerra e recompensa de novato disponivel.
+- Documentos e vencimentos agora entram no acompanhamento da jornada e renovar
+  documento/licenca/seguro/IPVA tambem alimenta missao e conquistas.
+- /releasecheck mostra quantidade de jornadas pendentes, alertas de documentos
+  e notificacoes GovBR online como gate operacional da v0.7.
+- Versao operacional sincronizada para v0.7.0 Alpha e alias de release
+  nova_gm_0700.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.6.0 Alpha
+===============================================================================
+
+Profissoes, anti-farm, progressao e recompensas:
+
+- Pagamentos de profissao passaram a usar um fluxo central de recompensa com
+  motivo especifico, log JOB_REWARD, contador diario por player e alerta staff
+  quando o limite diario ou uma sequencia rapida de pagamentos for atingida.
+- Rotas de trabalho agora pagam XP escalado pelo nivel da profissao, mostram
+  bonus de nivel, bonus dinamico de evento/horario e bloqueiam recompensa se o
+  anti-farm detectar abuso.
+- Servico rapido ganhou cooldown reduzido por progressao, respeitando minimo
+  seguro de 5 segundos, e tambem entra no controle de burst e limite diario.
+- Servicos manuais de medico, mecanico, frentista, pintura, taxi e bonus de
+  multa operacional foram integrados ao rastreio de recompensa de profissao.
+- Ao subir nivel de profissao, o jogador recebe recompensa em dinheiro,
+  XP geral, score semanal de trabalhador e log financeiro de carreira.
+- /emprego e /progressao exibem bonus de nivel, XP, desbloqueios, recompensa
+  diaria consumida, limite diario e estado do anti-farm da profissao.
+- Dialog de trabalho teve o limite interno ampliado para evitar truncamento de
+  acoes conforme novos botoes forem adicionados ao painel de profissao.
+- /saudegm e /releasecheck passaram a mostrar logs JOB_REWARD e alertas de job
+  como parte do gate v0.6 rumo a 1.0.0.
+- Versao operacional sincronizada para v0.6.0 Alpha e alias de release
+  nova_gm_0600.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.5.0 Alpha
+===============================================================================
+
+Empresas, contratos, estoque e economia:
+
+- Economia 2.0 avancou com /economiacidade, mostrando arrecadacao publica,
+  empresas online, contratos do dia, estoque empresarial, pedidos, saude da
+  empresa, limite economico de contrato e demanda de cada mercado.
+- /empresa ganhou painel Economia 2.0, saude financeira de 0 a 100, limite de
+  contrato dinamico e pedido automatico para gerar demanda quando a empresa
+  estiver parada.
+- Contratos empresariais agora possuem validade de 3 minutos, limite calculado
+  por score, caixa, estoque, funcionarios, divida e saude da empresa.
+- Antes de oferecer contrato, a GM valida se a empresa tem caixa/reserva para
+  honrar o pagamento, evitando proposta impossivel.
+- Ao aceitar contrato, o estoque e os pedidos da empresa variam conforme o valor
+  do contrato, e o impacto tambem abastece o estoque publico relacionado ao
+  tipo da empresa.
+- O mercado agora exibe demanda por produto e o pagamento de /venderproduto
+  varia por falta, excesso, evento de estoque e bonus de profissao/horario.
+- /releasecheck ficou mais exigente no gate v0.5: detecta estoque publico fora
+  do range, empresa com caixa/estoque/pedidos invalidos e falencia sem divida.
+- Versao operacional sincronizada para v0.5.0 Alpha e alias de release
+  nova_gm_0500.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.4.0 Alpha
+===============================================================================
+
+Trilha oficial rumo a 1.0.0:
+
+- Criado /releasecheck para staff acompanhar os bloqueadores reais de cada marco:
+  v0.4 dinheiro/banco, v0.5 economia, v0.6 profissoes, v0.7 GovBR/jornada,
+  v0.8 servicos publicos, v0.9 beta operacional e v1.0 release estavel.
+- O /releasecheck cruza dados online com logs e arquivos obrigatorios: cash sync,
+  reparos pendentes de contas antigas, emprestimos inconsistentes, estoque baixo,
+  empresa/contrato de risco, farm suspeito, jornada inicial pendente, casos
+  judiciais, risco de fluxo preso, timers, saves pendentes e server_info.
+- /saudegm passou a mostrar a existencia do plano de release e apontar
+  /releasecheck como checklist rumo a 1.0.0.
+- Criado scriptfiles/release_plan.txt com os gates oficiais de v0.4.0 ate v1.0.0.
+- O build/deploy automatico agora empacota, envia e verifica release_plan.txt no
+  FTP junto com AMX, server.cfg, changelog, server_info e game_config.
+- Versao operacional sincronizada para v0.4.0 Alpha e alias de release
+  nova_gm_0400.amx.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.26 Alpha
+===============================================================================
+
+Pos-deploy, seguranca operacional e deploy automatico:
+
+- Corretor de contas antigas criado para normalizar saldo negativo, banco,
+  salario, multas absurdas, sentencas, emprestimos/parcelas inconsistentes,
+  contratos quebrados, empresa fantasma/falida sem divida, veiculo sem dados e
+  inventario invalido.
+- O corretor roda ao carregar a conta e registra ACCOUNT_REPAIR. Staff nivel 2
+  pode usar /selftestgm reparar para aplicar a correcao nos jogadores online.
+- /selftestgm passou a mostrar a linha "corretor contas", separando alerta de
+  dados antigos de reparo efetivamente aplicado.
+- Anti-exploit de profissao reforcado: checkpoint de rota valida mundo/interior,
+  bloqueia conclusao rapida demais, deslocamento suspeito entre pontos, veiculo
+  errado, passageiro tentando concluir rota e pagamento sem expediente.
+- /servico recebeu cooldown real e alerta JOB_FAST_SERVICE quando usado rapido
+  demais para farmar pagamento/XP.
+- /antiabuso agora cruza a sessao online com historico real dos logs:
+  pagamentos com reason, pagamentos negados, pagamentos de profissao, contratos,
+  alertas de seguranca e ultimo alerta registrado.
+- Dialogs restantes ficaram seguros por array por player em Prefeitura,
+  licencas, painel de profissao, escolha/acao de jobs, VIP, inventario,
+  concessionaria, loja NPC e restaurante. Garagem, radio, DETRAN, GovBR,
+  empresas, contratos, imoveis e leilao ja estavam protegidos.
+- tools/build_deploy_check.ps1 ganhou -Deploy com FTP, backup remoto local,
+  upload com retry e verificacao final de AMX remoto, server.cfg, server_info e
+  changelog carregado.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.25 Alpha
+===============================================================================
+
+Auditoria, dialogs seguros e operacao staff:
+
+- Auditoria de dinheiro ficou mais detalhada: pagamentos por carteira/banco agora
+  aceitam motivo em Bank_TakePaymentReason e gravam reason nos logs PAYMENT.
+- Jobs, VIP, admin, venda de veiculo, recompensas civis, plantao medico,
+  contratos empresariais, imoveis, empresas, contratos civis, celular e taxi
+  passaram a usar motivos especificos nos logs de dinheiro.
+- GovBR no celular deixou de depender de listitem fixo. Cada linha do menu grava
+  uma acao por player antes de abrir o dialog.
+- Imoveis Online no celular agora salva o ID real do imovel exibido e valida a
+  acao escolhida antes de comprar ou alugar.
+- Empresa/CNPJ e Contratos civis passaram para arrays de acao por player,
+  evitando execucao errada se o estado mudar entre abrir e clicar.
+- Leilao DETRAN virou dialog acionavel com opcoes protegidas para status,
+  recuperar no patio e marcar GPS.
+- Painel anti-abuso criado em /antiabuso, /farmsuspeito e /auditoriafarm,
+  mostrando top dinheiro/XP da sessao, contratos suspeitos, maior divida,
+  players com divida alta e contas pendentes na fila dirty.
+- Menu staff ganhou atalho para Painel anti-abuso.
+- Criado tools/build_deploy_check.ps1 para compilar, copiar changelog, montar
+  pacote de deploy com alias, gerar ZIP, SHA256 e manifesto local.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.24 Alpha
+===============================================================================
+
+Pacote de estabilidade, lag e fluxos quebraveis:
+
+- Fuel_UpdateAll deixou de varrer todos os veiculos e procurar motorista por
+  loop de players. Agora o consumo roda pelos players logados que estao
+  dirigindo, usando o veiculo atual do motorista.
+- UpdateHudForAll separou HUD visual de logica mais pesada: interior automatico
+  roda em cadencia menor e XP por tempo nao executa a cada segundo.
+- Radar_UpdateAll agora ignora ciclo sem radares e so chama a checagem para
+  player logado dirigindo, mantendo a regra de servidor publico em servico sem
+  multa.
+- SaveAccountData ganhou fila dirty para chamadas nao criticas. Acoes comuns
+  marcam a conta como pendente e o autosave grava a fila; dinheiro critico pode
+  forcar save imediato por SaveAccountNow.
+- Banco, punicoes policiais/modbot, multas de radar e inventario agora usam
+  save imediato quando alteram dinheiro, punicao ou item critico.
+- Auditoria de dinheiro foi centralizada com SetPlayerCashCore,
+  GivePlayerCashReason e TakePlayerCashReason, registrando motivo em
+  scriptfiles/log_money_bank.txt.
+- Banco passou a registrar motivos especificos para deposito, saque e pagamento
+  combinado carteira/banco.
+- DETRAN deixou de depender de listitem cru: o menu agora grava a acao exibida
+  em array por player e rejeita opcao expirada antes de executar.
+- /desbugar e /unstuck limpam animacao, controle, checkpoint e estado de
+  trabalho, sem liberar prisao: preso volta para a cela, ferido volta ao
+  hospital e jogador comum volta ao spawn.
+- /selftestgm e /testegm para staff checam arquivos essenciais, timers, fila de
+  save, divergencia de dinheiro, saldos negativos, emprestimos inconsistentes,
+  possiveis fluxos presos e combustivel fora do range.
+- Zona de guerra passou a validar interior e virtual world, evitando kill legal
+  fora do mundo/interior correto mesmo dentro da area 2D de Mulholland.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.23 Alpha
+===============================================================================
+
+Banco e emprestimos mais realistas:
+
+- Emprestimo agora vira contrato salvo na conta com valor original financiado,
+  saldo restante, parcela mensal, quantidade de parcelas, parcelas pagas e
+  proxima cobranca.
+- Juros deixam de ser apenas fixos: o banco calcula risco por score, emprego,
+  historico financeiro e tamanho do valor solicitado em relacao ao limite.
+- A primeira parcela nao nasce cobrada na hora. O dinheiro cai na conta e a
+  primeira cobranca fica programada para 30 dias depois.
+- Boletos/GovBR geram a parcela do emprestimo quando chega a data. Se ja existe
+  parcela pendente, nao duplica cobranca; juros de atraso seguem pelo sistema de
+  boletos.
+- Pagamento da parcela reduz a divida real, soma historico positivo e registra
+  log BANK_LOAN em scriptfiles/log_money_bank.txt.
+- Gerente do banco ganhou opcao para pagar parcela vencida e quitar o emprestimo
+  inteiro. Quitacao antecipada em dia aplica desconto de 5%.
+- /saldo, extrato e /debugplayer mostram contrato, parcela, pagas/total e
+  proxima cobranca para facilitar auditoria.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.22 Alpha
+===============================================================================
+
+Hotfix de economia e pagamentos:
+
+- Corrigida a rotina central de pagamento para validar o total disponivel antes
+  de debitar qualquer valor. Agora a GM soma carteira + banco somente quando a
+  conta bancaria existe e bloqueia multa, boleto, imposto, compra ou servico se
+  o total real for insuficiente.
+- A carteira do SA-MP e o saldo salvo em PlayerInfo agora sao reconciliados
+  antes de qualquer entrada ou saida de dinheiro. Se houver divergencia, a GM
+  normaliza para o menor valor seguro, atualiza HUD/anti-cheat e grava log
+  MONEY_GUARD em scriptfiles/log_money_bank.txt.
+- Pagamento de multas e boletos agora informa a origem do dinheiro, por exemplo
+  carteira, banco ou carteira + banco. Isso deixa claro quando o GovBR/Banco
+  usou saldo bancario alem do dinheiro em maos.
+- Saldos negativos carregados de conta antiga sao travados em zero para carteira,
+  banco, salario, emprestimo, multas e sentenca antes de liberar o player.
+- /saldo e extrato passam a mostrar o valor disponivel para pagamentos, evitando
+  confusao entre dinheiro em maos, banco e multas pendentes.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.21 Alpha
+===============================================================================
+
+Atualizacao focada em operacao, qualidade, anti-abuso, onboarding e zona de
+guerra:
+
+- Criado /versao com versao atual, AMX de release, data de deploy, server_info,
+  changelog carregado e status da zona de guerra.
+- Criado /saudegm para staff validar arquivos essenciais, changelog,
+  server_info, game_config, estoque, arrecadacao, empresas quebradas e logs.
+- Criado /debugplayer [id] para admin ver emprego, login streak, passe, score,
+  empresa, contratos, multas, dividas, justica e ganhos monitorados.
+- Logs reforcados para recompensa diaria/semanal, contratos empresariais,
+  falencia, recuperacao judicial, mandado, leilao e zona de guerra.
+- Anti-abuso com cooldown de progresso de missoes/passe, limite diario de
+  contratos empresariais e alerta staff/log para ganho alto de dinheiro/XP.
+- /proximopasso ficou mais inteligente: guia documentos, banco, emprego,
+  veiculo, moradia e GovBR, com recompensa de novato ao completar a jornada.
+- Painel staff ganhou zona de guerra, empresas quebradas/divida, farm suspeito
+  e atalhos de acao como /debugplayer, /goto, /avisar e /congelar.
+- Criada zona de guerra em Mulholland, bairro de colina em Los Santos, com
+  status em /zonaguerra e alias /zonavermelha. Duas vezes por dia as 15:00 e
+  22:00 BRT por 30 minutos, a area aparece vermelha no mapa, kill dentro dela
+  nao prende durante a janela ativa e kill no local fora do horario prende
+  automaticamente.
+- /noticias e GovBR agora avisam quando a zona de guerra esta ativa.
+- /atualizacao foi polido com tela inicial de versoes, opcao de ler uma versao
+  especifica e opcao de ver tudo desde o inicio.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.20 Alpha
+===============================================================================
+
+Atualizacao focada em transparencia de versao dentro do servidor:
+
+- Criado comando /atualizacao com aliases /atualizacoes, /changelog e
+  /novidades.
+- O comando abre uma dialog paginada com o changelog completo da GM, mantendo
+  todo o historico desde as primeiras versoes documentadas.
+- Adicionado `scriptfiles/changelog.txt` como copia lida pela GM em runtime,
+  sincronizada com o CHANGELOG.txt da raiz do projeto.
+- /ajuda passou a listar /atualizacao em Player e RP para todos os jogadores.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.19 Alpha
+===============================================================================
+
+Atualizacao focada em retencao, economia 2.0, cidade viva e ajuda contextual:
+
+- Recompensa diaria e semanal no login com sequencia de dias, dinheiro, XP e
+  impacto positivo no historico cidadao.
+- Passe da cidade semanal em /passe com objetivos de profissao, economia e
+  servico publico, integrado ao GovBR e com recompensa propria.
+- Ranking semanal em /rankingsemanal para trabalhadores, empresas, policia e
+  cidadaos online.
+- GovBR ganhou notificacoes em /notificacoes para missoes, boletos, documentos,
+  justica, eventos e bonus ativo.
+- Historico pessoal em /historico mostra titulo, conquistas, reputacao,
+  sequencia de login, passe e pontuacao semanal.
+- Economia 2.0: empresas agora usam estoque real, contratos com jogadores,
+  pedidos automaticos, preco variando por estoque, divida, falencia e
+  recuperacao judicial.
+- Cidade viva ampliada: DETRAN com vistoria/leilao, hospital com plantao SAMU e
+  internacao, policia com mandado/prova/pericia/tornozeleira e prefeitura com
+  orcamento e licitacao.
+- /ajuda agora respeita permissao: comandos de staff/dono nao aparecem para
+  jogadores comuns nem para niveis menores; /ajuda profissoes mostra apenas os
+  comandos da profissao atual do player.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.18 Alpha
+===============================================================================
+
+Atualizacao focada em retencao, eventos dinamicos e operacao staff:
+
+- Criada central GovBR de atividades com missoes, boletos, documentos, empresa,
+  score cidadao, justica, evento ativo e proximo passo recomendado.
+- Eventos dinamicos da cidade agora alternam falta de estoque, blitz especial,
+  surto hospitalar, operacao policial e bonus de profissao por horario.
+- Progressao de profissoes ficou mais forte: niveis aumentam pagamento, mostram
+  desbloqueios e podem liberar veiculo melhor quando nao houver frota fixa.
+- Cadeia produtiva conectada: entregas abastecem mercado, mecanicos/frentistas
+  geram demanda para oficinas e taxistas/transporte geram pedidos para empresas.
+- Justica ganhou prazo de caso, audiencia automatica por prazo vencido, recurso
+  de sentenca, impacto no score e bloqueio de empregos sensiveis com caso aberto.
+- Staff ganhou /painelstaff e /operacao com evento ativo, maior devedor online,
+  empresas paradas, pedidos empresariais, denuncias, casos e alertas de abuso.
+- Radares nao multam servidores publicos enquanto estiverem em expediente real;
+  fora de expediente a fiscalizacao normal continua.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.17 Alpha
+===============================================================================
+
+Atualizacao focada em rotina diaria, empresas jogaveis e objetivos:
+
+- Criado /missoes com objetivos civis diarios: trabalhar 3 vezes, abastecer
+  mercado, consultar banco/extrato, pagar contas/multas e emitir/renovar
+  documentos. Completar 3 objetivos gera dinheiro, XP geral, XP da profissao e
+  bonus de historico cidadao.
+- Criado tutorial por objetivos em /objetivos: emitir documentos, escolher
+  emprego, fazer primeiro servico, abrir conta bancaria e consultar /cidadao.
+- Adicionado sistema de conquistas: Bom pagador, Trabalhador, Empresario,
+  Ficha limpa e Motorista legalizado, com titulo exibido no /cidadao.
+- Empresas agora recebem pedidos diarios, funcionarios aumentam receita e caixa
+  baixo para folha cria risco trabalhista/imposto.
+- Criado /rankingempresas para comparar empresas online por caixa, funcionarios
+  e imposto pendente.
+- Mercado ficou dinamico: estoque baixo aumenta pagamento de abastecimento e
+  estoque muito alto reduz o ganho.
+- BO agora vira caso com status, /casos permite policia/juiz/staff consultar
+  investigacoes online, audiencia e sentenca atualizam ficha e score.
+- Emprestimo gera parcela em boleto e pagamentos de parcelas melhoram o
+  historico financeiro.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.16 Alpha
+===============================================================================
+
+Atualizacao focada em reputacao, progressao e operacao economica:
+
+- Score cidadao consolidado com bom pagador, nome restrito, ficha policial,
+  documentos civis, contratos, patrimonio, empresa e historico de profissao.
+- /cidadao e /reputacao mostram pendencias, documentos, contratos, trabalho,
+  patrimonio, score e dicas para melhorar a reputacao.
+- Score agora afeta licencas, empregos sensiveis, aluguel, compra de imovel,
+  compra de veiculo, abertura de empresa e emprestimos.
+- /extrato mostra resumo financeiro, dividas, salario pendente, emprestimo,
+  limite de credito e historico simples.
+- /economia para staff mostra saude economica online: nomes restritos, players
+  bloqueados por divida, boletos, emprestimos, empresas e financiamentos.
+- BO agora registra abertura de investigacao e sentencas judiciais geram
+  antecedentes quando ha multa.
+- Logs economicos ampliados para imovel, aluguel, veiculo, licencas, empresas,
+  boletos e sentencas.
+- game_config.txt recebeu travas configuraveis de score cidadao para licenca,
+  emprego sensivel, veiculo, aluguel, imovel e empresa.
+
+===============================================================================
+RESUMO DA VERSAO v0.3.15 Alpha
+===============================================================================
+
+Atualizacao focada no ciclo civil/financeiro realista:
+
+- Criado sistema de boletos mensais com agua, luz, internet, aluguel, IPTU, IPVA,
+  seguro veicular, plano de saude, parcela de emprestimo e folha da empresa.
+- Boletos agora possuem vencimento, aviso antes de vencer, juros/multa por atraso
+  e restricao financeira estilo SPC/Serasa.
+- Score bancario passa a considerar dividas, nome restrito e historico de pagamento.
+- Emprestimos, compra de casa e compra de veiculo podem ser bloqueados por restricao.
+- Salario recorrente por profissao, renda registrada e imposto de renda automatico.
+- GovBR/celular ganhou acesso a boletos, contratos e cartorio digital.
+- Criado sistema de contratos: aluguel, financiamento, trabalho e seguro, com multa
+  de cancelamento.
+- Criado cartorio civil com CPF, RG, certidao, reconhecimento de firma, casamento,
+  divorcio e servicos de transferencia/compra e venda.
+- Criado log_contracts.txt para registrar contratos e atos de cartorio.
+- game_config.txt recebeu valores configuraveis para boletos, salario, cartorio,
+  contratos, juros e negativacao.
+
+Resumo da v0.3.14 Alpha:
+
+Atualizacao focada em sistemas mais proximos da vida real:
+
+- Documentos agora possuem vencimento: RG/CPF digital, CNH, licencas, plano de saude e alvara de empresa.
+- GovBR/celular ganhou consulta de documentos, impostos, justica e score bancario.
+- Banco agora calcula score por documentos, emprego, multas, procurado, antecedentes, casa e historico financeiro.
+- Emprestimo pode ser aprovado ou negado pelo score bancario.
+- Mercado autonomo ganhou estoque em TXT e pode ser abastecido por profissoes produtivas/logisticas.
+- Delivery consome estoque do mercado.
+- Sistema de justica com BO, audiencia, advogado, sentenca e pagamento de sentenca.
+- Saude real com prontuario, remedio, cirurgia/tratamento avancado e ambulancia NPC.
+- Empresas com CNPJ, funcionarios, caixa, venda/nota, salarios, imposto e alvara.
+- Governo arrecada taxas e impostos em government_revenue.txt.
+
+Resumo da v0.3.13 Alpha:
+
+- Blitz policial nao cria mais checkpoint visual no mapa.
+- /criarblitz nao remove mais a blitz anterior do policial.
+- Agora e possivel criar varias barreiras de blitz no mapa.
+- Cada blitz cria um conjunto maior com 3 barreiras fisicas e cones ao redor.
+- /removerblitz remove a blitz mais proxima.
+- /limparminhasblitz remove todas as blitz criadas pelo policial.
+- Dialog da blitz foi limpo para remover a opcao desnecessaria de checkpoint.
+- Versao sincronizada em server_info.txt, server.cfg e constantes da GM.
+
+Resumo da v0.3.12 Alpha:
+
+- Criado painel de configuracao por TXT.
+- Economia centralizada em scriptfiles/game_config.txt.
+- Precos, salarios, multas, fome/sede, IPVA, VIP, XP e cooldowns podem ser
+  ajustados sem recompilar a GM.
+- Criado loop inicial guiado para player novo.
+- Criado comando /inicio e /proximopasso.
+- Tutorial agora leva o player para documentos, banco, primeiro emprego,
+  comida/bebida, GPS e celular.
+- Entregador, Taxista e Mecanico receberam orientacao melhor de rotas e valores
+  puxados do TXT.
+- NPCs de atendimento adicionados em locais importantes.
+- /checkserver e /statusserver agora verificam tambem game_config.txt.
+- Versao sincronizada em server_info.txt, server.cfg e constantes da GM.
+
+===============================================================================
+ARQUIVOS IMPORTANTES
+===============================================================================
+
+gamemodes/nova_gm.amx
+- Arquivo compilado da GM para subir na hospedagem.
+
+scriptfiles/server_info.txt
+- Nome do servidor, versao, gamemode text e idioma.
+- Usado pelo hostname/modo do servidor.
+
+scriptfiles/changelog.txt
+- Copia do changelog lida pela GM para o comando /atualizacao.
+- Deve ser sincronizada com CHANGELOG.txt a cada release.
+
+scriptfiles/game_config.txt
+- Arquivo principal de balanceamento.
+- Controla dinheiro inicial, multiplicadores de preco, multas, pagamento de
+  emprego, fome/sede, banco, hospital, documentos, veiculos, IPVA, propriedades,
+  radar, XP e cooldowns.
+
+scriptfiles/bot_messages.txt
+- Mensagens automaticas do bot do servidor.
+
+scriptfiles/bot_badwords.txt
+- Palavras bloqueadas/monitoradas no chat.
+
+scriptfiles/job_vehicles.txt
+- Veiculos liberados para profissoes.
+
+scriptfiles/map_objects.txt
+- Objetos e portoes criados pelo dono/admin nivel 5.
+
+scriptfiles/radares.txt
+- Radares fixos e criados por admin.
+
+scriptfiles/music_playlists.txt
+- Radios e playlists por link.
+
+scriptfiles/vip_plans.txt
+- Planos VIP disponiveis.
+
+scriptfiles/whitelist.txt
+- Lista opcional de players liberados em modo Alpha fechado.
+
+scriptfiles/contas/
+- Contas e personagens dos players.
+- Nao sobrescrever em servidor online sem backup.
+
+scriptfiles/log_*.txt
+- Logs de dinheiro, banco, punicoes, mortes, bugs, chat filtrado, VIP e admin.
+
+===============================================================================
+COMANDOS DE OPERACAO
+===============================================================================
+
+/checkserver
+- Admin nivel 5.
+- Mostra se os arquivos essenciais existem e se o servidor esta pronto.
+
+/statusserver
+- Staff.
+- Mostra status geral: players, admins, contas, veiculos, radares, bugs,
+  uptime, hora BR e informacoes de operacao.
+
+/configserver ou /cfgserver
+- Admin nivel 5.
+- Mostra os valores principais carregados de game_config.txt.
+
+/reloadconfig ou /reloadcfg
+- Admin nivel 5.
+- Recarrega scriptfiles/game_config.txt sem recompilar.
+- Observacao: timers novos aplicam totalmente apos reiniciar a GM.
+
+/manutencao on/off
+- Ativa modo manutencao.
+- Quando ligado, somente staff autorizado deve entrar.
+
+/admins
+- Mostra admins online em dialog.
+
+/bug
+- Player registra bugs/problemas em TXT.
+
+===============================================================================
+SISTEMAS DE PLAYER
+===============================================================================
+
+Conta e personagem
+- Cadastro/login por dialog.
+- PlayerInfo centralizado.
+- Status logado.
+- Dinheiro.
+- Skin.
+- Admin level.
+- Kills/mortes.
+- Posicao, interior e virtual world.
+- Tempo online.
+- Ultimo spawn.
+- Nome RP separado da conta.
+- Validacao de nome RP no formato Nome_Sobrenome.
+
+HUD
+- HUD proprio cobrindo o HUD original do SA-MP.
+- Mostra dinheiro.
+- Data e hora.
+- Localizacao.
+- Profissao atual.
+- Fome e sede.
+- Clima.
+- XP e level.
+- Velocimetro digital ao entrar em carro, moto ou bicicleta.
+- Veiculos automotores mostram rotacao do motor.
+
+Fome e sede
+- Fome/sede reduzem com o tempo.
+- Avisos na tela quando o player esta em estado critico.
+- Se o player ignorar, sofre dano e pode morrer.
+- Ao morrer, respawna no hospital.
+
+Inventario
+- Base para itens como comida, bebida, kit medico, ferramentas, documentos,
+  isca, minerio, peixe, sementes e itens de emprego.
+
+Celular
+- Comando/dialog com estilo de celular.
+- Acesso a banco, servicos do governo, multas, delivery, transporte e outros
+  atalhos de RP.
+
+GPS
+- Locais importantes com checkpoint e icones.
+- Prefeitura, hospital, delegacia, concessionaria, empregos e pontos publicos.
+
+Menu principal
+- /menu ou /painel abre dialog central.
+- Player acessa personagem, GPS, banco/celular, veiculos, empregos, imoveis,
+  servicos publicos e staff.
+
+Ajuda
+- /ajuda em dialog.
+- Comandos organizados por categoria.
+- Comandos clicaveis pela dialog.
+
+===============================================================================
+SISTEMAS DE ECONOMIA
+===============================================================================
+
+Dinheiro
+- Helpers centralizados para dar, tirar e setar dinheiro.
+- Atualiza HUD e logs corretamente.
+
+Banco
+- Abrir conta.
+- Fechar conta.
+- Deposito.
+- Saque.
+- PIX/transferencia.
+- Cartao virtual.
+- Emprestimo.
+- Gerente no banco.
+- Custos e limites puxados de game_config.txt.
+
+Compras
+- Conveniencias vendem comida e bebida.
+- Restaurantes/lanchonetes com atendimento autonomo por NPC.
+- Delivery pelo celular.
+
+Multas e impostos
+- Multas integradas com governo/celular.
+- IPVA de veiculos.
+- Taxas de garagem, patio, transferencia, placa, seguro e registro.
+- Valores puxados do TXT.
+
+===============================================================================
+PROFISSOES
+===============================================================================
+
+Base de empregos
+- Profissao atual salva no player.
+- XP por profissao.
+- Level de profissao.
+- Pagamento por tarefa.
+- Bonus por rota/conclusao.
+- Cooldown anti-farm.
+- Penalidade por abandono.
+- Uniformes/skins/equipamentos previstos por profissao.
+
+Empregos existentes/estruturados
+- Entregador.
+- Lixeiro/coletor.
+- Motorista de onibus.
+- Taxista.
+- Caminhoneiro.
+- Mecanico.
+- Frentista.
+- Policial.
+- Medico/enfermeiro.
+- Bombeiro.
+- Seguranca.
+- Carteiro.
+- Motoboy.
+- Pescador.
+- Agricultor.
+- Minerador.
+- Pedreiro.
+- Garcom.
+- Cozinheiro.
+- Vendedor.
+- Jornalista.
+- Advogado.
+- Juiz.
+- Motorista de ambulancia.
+- Tecnico de internet/energia.
+
+Profissoes mais trabalhadas nesta versao
+- Entregador: rotas, pagamento configuravel, bonus e XP.
+- Taxista: orientacao de trabalho, pagamento configuravel, bonus e XP.
+- Mecanico: atendimento, reparo NPC/configuravel, pagamento e XP.
+
+===============================================================================
+VEICULOS
+===============================================================================
+
+Concessionaria
+- Compra de veiculos por dialog.
+- Precos com multiplicador por TXT.
+- Spawn do veiculo comprado.
+- Salvamento do veiculo.
+
+Veiculos salvos
+- Dono.
+- Modelo.
+- Placa.
+- Combustivel.
+- Vida.
+- Cor.
+- Posicao.
+- Garagem.
+- Seguro.
+- IPVA.
+- Status de patio.
+
+Garagens
+- Garagem publica.
+- Garagem residencial.
+- Guardar/retirar veiculo por dialog.
+- Integracao com casas/apartamentos.
+
+DETRAN
+- Registrar veiculo.
+- Trocar placa.
+- Pagar IPVA.
+- Consultar multas.
+- Transferir veiculo.
+- Documento do veiculo.
+
+Chaves
+- Trancar/destrancar.
+- Controle de dono/permissao.
+- Emprestar chave.
+- Remover chave.
+- Alarme ao tentar entrar sem permissao.
+
+Combustivel
+- Veiculos gastam combustivel.
+- Postos de gasolina mapeados.
+- Abastecimento por NPC/frentista.
+- HUD/velocimetro mostra combustivel.
+
+Som e radio
+- Radio por link.
+- Radio veicular.
+- Som ambiente em locais publicos.
+- Admin pode criar som local para evento RP.
+
+===============================================================================
+POLICIA, SEGURANCA E JUSTICA
+===============================================================================
+
+Admin levels
+- 0 Jogador.
+- 1 Helper Nivel 1.
+- 2 Helper Nivel 2.
+- 3 Administrador Nivel 1.
+- 4 Administrador Nivel 2.
+- 5 DONO.
+
+Staff/admin
+- /admin por dialog.
+- Comandos separados por nivel.
+- Nivel 5 tem acesso total.
+- Logs de acoes admin.
+
+Punicoes
+- Kick.
+- Ban.
+- Unban.
+- Lista de banidos.
+- Prender player por punicao RP/anti-RP.
+- Logs de punicoes.
+
+Seguranca
+- Anti-flood de chat.
+- Anti-flood de comandos.
+- Cooldowns para comandos sensiveis.
+- Protecao basica anti-cheat.
+- Alertas de dinheiro alterado fora dos helpers.
+- Alertas de armas nao permitidas.
+- Alertas de vida/colete anormal.
+- Alertas de teleport brusco.
+
+Policia RP
+- Consulta por placa.
+- Consulta CNH/documentos.
+- Ficha criminal.
+- Multas salvas.
+- Procurado.
+- Prisao por tempo.
+- Fianca.
+- Apreensao de veiculo.
+- Patio municipal.
+- Blitz policial com multiplas barreiras, cones fisicos e dialogs.
+
+Radares
+- Radares fixos em avenidas.
+- Radares moveis sorteados.
+- Admin nivel 5 pode adicionar radar manualmente.
+- Distancia minima entre radares moveis: 500 metros.
+- Multas integradas ao GovBR/celular.
+
+===============================================================================
+HOSPITAL E SAUDE
+===============================================================================
+
+Hospital
+- Spawn hospitalar ao morrer.
+- Atendimento medico.
+- Cobranca de tratamento.
+- Plano de saude.
+- Custos puxados de game_config.txt.
+
+Sistema medico
+- Base para ferimentos.
+- Kit medico.
+- Atendimento por medico/enfermeiro.
+- Ambulancia/resgate previsto no fluxo RP.
+
+===============================================================================
+MAPA, LOCAIS E INTERIORES
+===============================================================================
+
+Locais publicos
+- Prefeitura.
+- Hospital.
+- Delegacia.
+- Concessionaria.
+- DETRAN.
+- Banco.
+- Conveniencias.
+- Postos de gasolina.
+- Locais de emprego.
+
+Interacoes
+- Icones no mapa.
+- Textos 3D.
+- Pontos de acao separados dos icones.
+- Raios ajustados por tipo de local.
+- Checkpoints por GPS.
+- Interiores com entrada/saida automatica em locais especificos.
+
+NPCs
+- Recepcionista da prefeitura.
+- Triagem do hospital.
+- Recepcao da delegacia.
+- Gerente do banco.
+- Vendedor da concessionaria.
+- Atendente do DETRAN.
+- Frentista.
+- Caixa da conveniencia.
+
+Objetos e portoes
+- Dono/admin nivel 5 pode criar objetos/portoes.
+- Portoes e cancelas podem abrir com H/buzina.
+- Abertura pode depender da profissao.
+- Fechamento automatico por timer.
+- Raio maior para portoes duplos/triplos.
+- Dados salvos em map_objects.txt.
+
+===============================================================================
+VIP
+===============================================================================
+
+Sistema VIP
+- Quatro niveis de VIP.
+- Expiracao.
+- Comandos admin para setar/remover.
+- Planos salvos em vip_plans.txt.
+- Logs em log_vip.txt.
+
+Painel externo VIP
+- Base criada para integrar pagamento externo.
+- Modelo recomendado: pagamento fora do SA-MP e painel grava liberacao VIP.
+
+===============================================================================
+RESUMO DA VERSAO 1.4.0 STABLE LOCAL - FECHAMENTO
+===============================================================================
+
+Pacote 1.4 fechado localmente com foco em retencao, vida urbana e profissoes.
+
+Retencao e vida urbana
+- Jornada diaria 2.0 ativa no GovBR.
+- Agenda semanal 2.0 ligada a metas por profissao e rankings semanais.
+- Eventos por bairro 2.0 usando metas leves por regiao.
+- Progresso urbano 2.0 consolidado por trabalho, economia, seguranca, civico e comunidade.
+
+Profissoes 2.1
+- Prefeitura separa empregos privados e publicos em ordem alfabetica.
+- /profissao, /profissoes e /empregos usam o mesmo agrupamento visual.
+- Empregos privados mantem salario, bonus e produtividade.
+- Empregos publicos ficam com salario diario, reputacao e permissoes sem bonus financeiro.
+- Levels privados/faccoes ficam na faixa inicial; cargos publicos sobem por faixa maior.
+- Faccoes e ocupacoes ilegais ficam fora da Prefeitura em /faccoes e /ocupacoesilegais.
+- Acoes especiais adicionadas para DETRAN, banco, contador, corretor, perito e justica.
+
+Deploy local
+- Pasta deploy limpa: apenas um ZIP final fica visivel.
+- Staging tecnico movido para build/deploy_staging.
+- Manifesto e checklist final ficam dentro do staging e do pacote validado.
+
+Validacao de fechamento
+- Smoke test local coberto por auditoria de comandos, boot test e pos-restart.
+- Comandos criticos roteados: /versao, /saudegm, /integridade, /selftestgm,
+  /releasecheck e /cmdmodulos.
+- Telas 1.4 roteadas: /jornadadiaria, /agendasemanal, /bairros,
+  /progressourbano e GovBR.
+- Economia rapida conferida: salarios mensais/diarios dentro da faixa esperada,
+  publicos sem bonus e privados com bonus.
+
+===============================================================================
+CLIMA E TEMPO
+===============================================================================
+
+Tempo
+- Horario exibido sincronizado com Brasilia.
+- Hostname com player count, hora e versao.
+
+Clima
+- Sistema de clima randomico.
+- Clima aparece no HUD.
+- Pode evoluir para clima baseado em periodos/estacoes.
+
+===============================================================================
+BACKUP E OPERACAO ONLINE
+===============================================================================
+
+Backup
+- Script de backup automatico da pasta scriptfiles.
+- Backup mantem seguranca das contas e arquivos TXT.
+
+Pacote de deploy
+- ZIP criado em deploy/ para subir na hospedagem.
+- Pacote nao inclui contas, logs, bans, bugs, pedidos VIP nem dados vivos.
+
+Hospedagem
+- Ao alterar codigo Pawn: compilar nova_gm.amx, subir e reiniciar.
+- Ao alterar TXT: usar reload correspondente ou reiniciar.
+- Ao alterar game_config.txt: usar /reloadconfig.
+
+===============================================================================
+PROXIMOS PASSOS RECOMENDADOS
+===============================================================================
+
+1. Revisar interiores especificos.
+- Hospital, bombeiros, delegacia, mecanica, restaurantes e banco devem ter
+  layout proprio e sem textos muito proximos.
+
+2. Aprofundar 3 empregos principais.
+- Entregador.
+- Taxista.
+- Mecanico.
+- Criar falhas, rotas especiais, pontuacao, bonus por desempenho e progresso.
+
+3. Casas/apartamentos completos.
+- Compra.
+- Aluguel.
+- Spawn na residencia.
+- Bau.
+- Garagem residencial.
+- Imposto mensal.
+
+4. Policia e hospital mais RP.
+- Ferimentos por tipo.
+- Prisao por tempo.
+- Ficha criminal completa.
+- Atendimento medico por chamado.
+- Seguro saude.
+
+5. Auditoria online.
+- Conferir server_log.txt da hospedagem apos jogadores testarem.
+- Verificar crash, unknown command, dialogs vazios e erros de permissao.
+
+===============================================================================
+CHECKLIST PARA SUBIR ATUALIZACAO
+===============================================================================
+
+1. Fazer backup da pasta scriptfiles da hospedagem.
+2. Subir gamemodes/nova_gm.amx.
+3. Subir os TXT novos/alterados da pasta scriptfiles.
+4. Subir scriptfiles/changelog.txt quando o changelog mudar.
+5. Subir server.cfg somente se quiser atualizar hostname/config geral.
+5. Reiniciar o servidor.
+6. Entrar como admin nivel 5.
+7. Rodar /checkserver.
+8. Rodar /statusserver.
+9. Testar login, /menu, /inicio, GPS, banco, emprego, veiculo e HUD.
+10. Conferir server_log.txt depois dos primeiros testes online.

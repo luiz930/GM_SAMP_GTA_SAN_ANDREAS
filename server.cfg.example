@@ -1,0 +1,19 @@
+echo Executing Server Config...
+lanmode 0
+rcon_password troque-esta-senha
+maxplayers 54
+port 7777
+hostname Life Simulator BR | v1.5.0 Stable
+gamemode0 nova_gm 1
+filterscripts
+announce 1
+chatlogging 1
+weburl localhost
+onfoot_rate 40
+incar_rate 40
+weapon_rate 40
+stream_distance 300.0
+stream_rate 1000
+maxnpc 8
+logtimeformat [%H:%M:%S]
+language Portuguese

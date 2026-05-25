@@ -1,0 +1,48 @@
+# Runtime and local server state
+server.cfg
+server_log.txt
+crashinfo.txt
+scriptfiles/
+backups/
+build/
+deploy/
+downloads/
+
+# Compiled artifacts and release packages
+*.amx
+*.zip
+*.rar
+*.7z
+*.log
+$out.amx
+
+# SA-MP/GTA binaries and local client/modpack bundles
+*.exe
+*.dll
+*.asi
+*.img
+*.txd
+*.dff
+client/GTA San Andreas NovaGM BR/
+modpacks/
+
+# Secrets and local credentials
+*.secret
+*.key
+*.pem
+*.env
+ftp_credential.json
+
+# Host-specific operational deploy helpers
+tools/*ftp*
+tools/*deploy*
+tools/save_ftp_secret.ps1
+tools/check_post_restart.ps1
+tools/rollback_ultimo_deploy.ps1
+!tools/pre_deploy_gate.ps1
+
+# Editor/OS noise
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

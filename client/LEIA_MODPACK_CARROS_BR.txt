@@ -1,0 +1,21 @@
+Esta copia do GTA San Andreas ja esta preparada para carregar carros brasileiros no SA-MP.
+
+Use:
+iniciar_samp_carros_brasileiros.bat
+
+Ou use o atalho criado na Area de Trabalho:
+ABRIR SAMP COM CARROS BRASILEIROS.bat
+
+Pasta do GTA modificado:
+client\GTA San Andreas NovaGM BR
+
+O pack visual esta instalado em:
+client\GTA San Andreas NovaGM BR\modloader\Pack Carros Brasileiros
+
+O ASI loader foi instalado como:
+client\GTA San Andreas NovaGM BR\dinput8.dll
+
+Se o ModLoader carregar corretamente, o jogo cria arquivos de log dentro da pasta do GTA/modloader.
+
+Se voce abrir o SA-MP antigo em C:\Program Files (x86)\Rockstar Games\GTA San Andreas,
+os carros brasileiros nao vao aparecer, porque essa pasta bloqueou instalacao sem UAC.
