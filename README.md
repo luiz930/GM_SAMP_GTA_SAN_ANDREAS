@@ -101,6 +101,8 @@ O projeto foi estruturado como uma base modular: o gamemode principal atua como 
 |   `-- nova_gm.pwn              # Gamemode principal
 |-- include/
 |   `-- core/                    # Modulos de gameplay e infraestrutura
+|-- docs/
+|   `-- MAPA_DO_SISTEMA.md       # Mapa tecnico da arquitetura e dos fluxos
 |-- filterscripts/               # Filterscripts auxiliares e exemplos SA-MP
 |-- npcmodes/                    # NPCs e gravacoes de rotas
 |-- scriptfiles/                 # Dados e configuracoes de runtime
@@ -114,6 +116,12 @@ O projeto foi estruturado como uma base modular: o gamemode principal atua como 
 ```
 
 > Para publicacao em repositorio publico, mantenha fora do Git: `server.cfg` real, backups, builds, ZIPs, AMX compilado, credenciais, contas, logs e dados reais de `scriptfiles`.
+
+---
+
+## Mapa Tecnico
+
+Para entender como a GM funciona por dentro, consulte o [Mapa do Sistema](docs/MAPA_DO_SISTEMA.md). Ele explica o fluxo de inicializacao, roteamento de comandos, persistencia, empregos, frota, objetos, economia, seguranca e deploy.
 
 ---
 

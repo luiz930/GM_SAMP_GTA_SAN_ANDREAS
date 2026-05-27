@@ -73,6 +73,11 @@
 #define INTERIOR_SPOT_ACTION_RADIUS (1.4)
 #define SPOT_MIN_CONTROL_DIST       (2.2)
 #define INTERIOR_SPOT_COOLDOWN_MS   (15000)
+#define CIVIL_ELEVATOR_FIX_OBJECTS  (2)
+#define CIVIL_ELEVATOR_SAFE_X       (268.9000)
+#define CIVIL_ELEVATOR_SAFE_Y       (-1629.1000)
+#define CIVIL_ELEVATOR_SAFE_Z       (18.3000)
+#define CIVIL_ELEVATOR_SAFE_A       (80.0)
 #define AUTO_ACTION_PUBLIC          (1)
 #define AUTO_ACTION_JOB             (2)
 #define AUTO_ACTION_CONVENIENCE     (3)
@@ -195,8 +200,8 @@ new gServerLocations[][eServerLocation] =
     { "Garagem Publica", 1643.7200, -1524.1200, 13.5547, 0.0, 0, 0, 55, 0 },
     { "Patio Municipal", 1591.8500, -1608.4100, 13.3828, 270.0, 0, 0, 55, 0 },
     { "QG PRF Rodovia LS", 1428.0861, -964.7896, 37.0835, 151.5440, 0, 0, 30, 0 },
-    { "QG Policia Federal", 1391.7720, -1700.6690, 13.5395, 90.0, 0, 0, 30, 0 },
-    { "QG Policia Civil", 1526.8700, -1677.8200, 13.5469, 90.0, 0, 0, 30, 0 },
+    { "QG Policia Federal", 326.2891, -1515.4176, 36.0325, 50.6560, 0, 0, 30, 0 },
+    { "QG Policia Civil", 285.8905, -1601.2700, 32.8313, 183.5020, 0, 0, 30, 0 },
     { "QG Policia Penal", 1595.8700, -1638.2200, 13.5469, 180.0, 0, 0, 30, 0 }
 };
 
@@ -339,6 +344,14 @@ new gPlayerInteriorMoveTick[MAX_PLAYERS];
 new gPlayerInteriorSpotTick[MAX_PLAYERS];
 new gPlayerInPoliceCell[MAX_PLAYERS];
 new gPlayerLocationIconVisible[MAX_PLAYERS][sizeof(gServerLocations)];
+new gCivilElevatorFixObject[CIVIL_ELEVATOR_FIX_OBJECTS];
+
+stock World_InitSafetyObjects()
+{
+    gCivilElevatorFixObject[0] = CreateObject(19379, 268.9000, -1629.1000, 17.7000, 0.0, 90.0, 80.0, 80.0);
+    gCivilElevatorFixObject[1] = CreateObject(19379, 268.0000, -1634.2000, 17.7000, 0.0, 90.0, 80.0, 80.0);
+    return 1;
+}
 
 new gNpcTransportLocations[] =
 {
@@ -1712,6 +1725,11 @@ stock World_UpdatePlayerInteriors(playerid)
     new currentInterior;
     new tick;
 
+    if (World_RescueCivilElevator(playerid))
+    {
+        return 1;
+    }
+
     if (IsPlayerInAnyVehicle(playerid))
     {
         return 0;
@@ -1755,6 +1773,50 @@ stock World_UpdatePlayerInteriors(playerid)
         }
     }
     return 0;
+}
+
+stock World_RescueCivilElevator(playerid)
+{
+    new Float:x;
+    new Float:y;
+    new Float:z;
+    new vehicleid;
+
+    if (GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
+    {
+        return 0;
+    }
+
+    GetPlayerPos(playerid, x, y, z);
+    if (x < 260.0 || x > 276.5 || y < -1640.0 || y > -1621.0 || z >= 16.9)
+    {
+        return 0;
+    }
+
+    if (IsPlayerInAnyVehicle(playerid))
+    {
+        vehicleid = GetPlayerVehicleID(playerid);
+        if (vehicleid != INVALID_VEHICLE_ID)
+        {
+            SetVehiclePos(vehicleid, CIVIL_ELEVATOR_SAFE_X, CIVIL_ELEVATOR_SAFE_Y, CIVIL_ELEVATOR_SAFE_Z);
+            SetVehicleZAngle(vehicleid, CIVIL_ELEVATOR_SAFE_A);
+            LinkVehicleToInterior(vehicleid, 0);
+            SetVehicleVirtualWorld(vehicleid, 0);
+        }
+    }
+    else
+    {
+        SetPlayerInterior(playerid, 0);
+        SetPlayerVirtualWorld(playerid, 0);
+        SetPlayerPos(playerid, CIVIL_ELEVATOR_SAFE_X, CIVIL_ELEVATOR_SAFE_Y, CIVIL_ELEVATOR_SAFE_Z);
+        SetPlayerFacingAngle(playerid, CIVIL_ELEVATOR_SAFE_A);
+        SetCameraBehindPlayer(playerid);
+    }
+
+    Security_GrantTeleportGrace(playerid);
+    gPlayerInteriorMoveTick[playerid] = GetTickCount();
+    SendClientMessage(playerid, COLOR_YELLOW, "Seguranca do predio: voce foi puxado de volta do vao do elevador.");
+    return 1;
 }
 
 stock FindNearestAutoInteriorAction(playerid)

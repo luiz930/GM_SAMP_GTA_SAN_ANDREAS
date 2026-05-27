@@ -76,6 +76,7 @@ public OnGameModeInit()
     AmbientNpc_Init();
     CreateWorldVehicles();
     CreateWorldInteractionLabels();
+    World_InitSafetyObjects();
     Fuel_Init();
     MapObjects_Init();
     Work_InitVehicles();
@@ -1040,6 +1041,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     if (dialogid == DIALOG_ADMIN_HELP)
     {
         HandleAdminHelpDialog(playerid, response);
+        return 1;
+    }
+
+    if (dialogid == DIALOG_SERVER_GMX_CONFIRM)
+    {
+        Admin_HandleGmxConfirmDialog(playerid, response);
         return 1;
     }
 

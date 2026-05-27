@@ -87,6 +87,7 @@
 #define LIFE_CONTRACT_MAX_ACTIONS   (9)
 #define LIFE_AUCTION_MAX_ACTIONS    (3)
 #define LIFE_PUBLIC_MAX_ACTIONS     (12)
+#define LIFE_BILL_MAX_ACTIONS       (16)
 #define LIFE_AUCTION_STATUS         (1)
 #define LIFE_AUCTION_RECOVER        (2)
 #define LIFE_AUCTION_GPS            (3)
@@ -285,6 +286,8 @@ new gLifeAuctionActions[MAX_PLAYERS][LIFE_AUCTION_MAX_ACTIONS];
 new gLifeAuctionActionCount[MAX_PLAYERS];
 new gLifePublicActions[MAX_PLAYERS][LIFE_PUBLIC_MAX_ACTIONS];
 new gLifePublicActionCount[MAX_PLAYERS];
+new gLifeBillActions[MAX_PLAYERS][LIFE_BILL_MAX_ACTIONS];
+new gLifeBillActionCount[MAX_PLAYERS];
 new gPublicMissionType[MAX_PLAYERS];
 new gPublicMissionLastTick[MAX_PLAYERS];
 new gPublicMissionActor[MAX_PLAYERS];
@@ -9156,6 +9159,20 @@ stock Life_AddContractAction(playerid, list[], size, actionid, label[])
     return 1;
 }
 
+stock Life_AddBillAction(playerid, list[], size, actionid, label[])
+{
+    if (gLifeBillActionCount[playerid] >= LIFE_BILL_MAX_ACTIONS)
+    {
+        return 0;
+    }
+
+    gLifeBillActions[playerid][gLifeBillActionCount[playerid]] = actionid;
+    gLifeBillActionCount[playerid]++;
+    strcat(list, label, size);
+    strcat(list, "\n", size);
+    return 1;
+}
+
 stock Life_AddAuctionAction(playerid, list[], size, actionid, label[])
 {
     if (gLifeAuctionActionCount[playerid] >= LIFE_AUCTION_MAX_ACTIONS)
@@ -11642,20 +11659,22 @@ stock Life_ShowBillsDialog(playerid)
     total = Life_BillTotal(playerid);
 
     format(list, sizeof(list), "Boleto\tValor\n");
-    format(line, sizeof(line), "Agua\t$%d\n", PlayerInfo[playerid][pBillWaterDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Luz\t$%d\n", PlayerInfo[playerid][pBillElectricDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Internet\t$%d\n", PlayerInfo[playerid][pBillInternetDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Aluguel\t$%d\n", PlayerInfo[playerid][pBillRentDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "IPTU\t$%d\n", PlayerInfo[playerid][pPropertyTaxDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "IPVA/CRLV\t$%d\n", PlayerInfo[playerid][pVehicleTaxDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Seguro veicular\t$%d\n", PlayerInfo[playerid][pBillVehicleInsuranceDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Plano de saude\t$%d\n", PlayerInfo[playerid][pBillHealthPlanDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Parcela de emprestimo\t$%d\n", PlayerInfo[playerid][pBillLoanInstallmentDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Empresa/funcionarios\t$%d\n", PlayerInfo[playerid][pBillBusinessPayrollDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Multas\t$%d | pontos CNH %d\n", PlayerInfo[playerid][pFines], PlayerInfo[playerid][pTrafficPoints]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Sentenca judicial\t$%d\n", PlayerInfo[playerid][pJusticeFineDue]); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Pagar tudo\t$%d | vencimento %s\n", total, days); strcat(list, line, sizeof(list));
-    format(line, sizeof(line), "Situacao SPC/Serasa\t%s | score %d\n", PlayerInfo[playerid][pDirtyName] ? ("restrito") : ("regular"), Life_GetBankScore(playerid)); strcat(list, line, sizeof(list));
+    gLifeBillActionCount[playerid] = 0;
+    format(line, sizeof(line), "Agua\t$%d", PlayerInfo[playerid][pBillWaterDue]); Life_AddBillAction(playerid, list, sizeof(list), 0, line);
+    format(line, sizeof(line), "Luz\t$%d", PlayerInfo[playerid][pBillElectricDue]); Life_AddBillAction(playerid, list, sizeof(list), 1, line);
+    format(line, sizeof(line), "Internet\t$%d", PlayerInfo[playerid][pBillInternetDue]); Life_AddBillAction(playerid, list, sizeof(list), 2, line);
+    format(line, sizeof(line), "Aluguel\t$%d", PlayerInfo[playerid][pBillRentDue]); Life_AddBillAction(playerid, list, sizeof(list), 3, line);
+    format(line, sizeof(line), "IPTU\t$%d", PlayerInfo[playerid][pPropertyTaxDue]); Life_AddBillAction(playerid, list, sizeof(list), 4, line);
+    format(line, sizeof(line), "IPVA/CRLV\t$%d", PlayerInfo[playerid][pVehicleTaxDue]); Life_AddBillAction(playerid, list, sizeof(list), 5, line);
+    format(line, sizeof(line), "Seguro veicular\t$%d", PlayerInfo[playerid][pBillVehicleInsuranceDue]); Life_AddBillAction(playerid, list, sizeof(list), 6, line);
+    format(line, sizeof(line), "Plano de saude\t$%d", PlayerInfo[playerid][pBillHealthPlanDue]); Life_AddBillAction(playerid, list, sizeof(list), 7, line);
+    format(line, sizeof(line), "Parcela de emprestimo\t$%d", PlayerInfo[playerid][pBillLoanInstallmentDue]); Life_AddBillAction(playerid, list, sizeof(list), 8, line);
+    format(line, sizeof(line), "Empresa/funcionarios\t$%d", PlayerInfo[playerid][pBillBusinessPayrollDue]); Life_AddBillAction(playerid, list, sizeof(list), 9, line);
+    format(line, sizeof(line), "Multas\t$%d | pontos CNH %d", PlayerInfo[playerid][pFines], PlayerInfo[playerid][pTrafficPoints]); Life_AddBillAction(playerid, list, sizeof(list), 10, line);
+    format(line, sizeof(line), "Sentenca judicial\t$%d", PlayerInfo[playerid][pJusticeFineDue]); Life_AddBillAction(playerid, list, sizeof(list), 11, line);
+    format(line, sizeof(line), "Taxas GovBR\t$%d", PlayerInfo[playerid][pGovernmentTaxDue]); Life_AddBillAction(playerid, list, sizeof(list), 14, line);
+    format(line, sizeof(line), "Pagar tudo\t$%d | vencimento %s", total, days); Life_AddBillAction(playerid, list, sizeof(list), 12, line);
+    format(line, sizeof(line), "Situacao SPC/Serasa\t%s | score %d", PlayerInfo[playerid][pDirtyName] ? ("restrito") : ("regular"), Life_GetBankScore(playerid)); Life_AddBillAction(playerid, list, sizeof(list), 13, line);
     ShowPlayerDialog(playerid, DIALOG_LIFE_BILLS, DIALOG_STYLE_TABLIST_HEADERS, "Boletos e SPC/Serasa", list, "Pagar", "Fechar");
     return 1;
 }
@@ -11705,6 +11724,7 @@ stock Life_PayBillItem(playerid, item)
             Life_ShowBankScore(playerid);
             return 1;
         }
+        case 14: amount = PlayerInfo[playerid][pGovernmentTaxDue];
         default: return 1;
     }
 
@@ -11751,6 +11771,7 @@ stock Life_PayBillItem(playerid, item)
     if (item == 9 || item == 12) { PlayerInfo[playerid][pBillBusinessPayrollDue] = 0; }
     if (item == 10 || item == 12) { govAmount += PlayerInfo[playerid][pFines]; PlayerInfo[playerid][pFines] = 0; }
     if (item == 11 || item == 12) { govAmount += PlayerInfo[playerid][pJusticeFineDue]; PlayerInfo[playerid][pJusticeFineDue] = 0; }
+    if (item == 14 || item == 12) { govAmount += PlayerInfo[playerid][pGovernmentTaxDue]; PlayerInfo[playerid][pGovernmentTaxDue] = 0; }
 
     if (govAmount > 0)
     {
@@ -12153,7 +12174,12 @@ stock Life_HandleDialog(playerid, dialogid, response, listitem, inputtext[] = ""
     if (dialogid == DIALOG_LIFE_BILLS)
     {
         if (!response) return 1;
-        return Life_PayBillItem(playerid, listitem);
+        if (listitem < 0 || listitem >= gLifeBillActionCount[playerid])
+        {
+            SendClientMessage(playerid, COLOR_RED, "Opcao de boleto expirou. Abra novamente.");
+            return Life_ShowBillsDialog(playerid);
+        }
+        return Life_PayBillItem(playerid, gLifeBillActions[playerid][listitem]);
     }
     if (dialogid == DIALOG_LIFE_CONTRACTS)
     {

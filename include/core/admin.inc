@@ -66,6 +66,60 @@ stock TeleportPlayerNearPlayer(playerid, targetid)
     return 1;
 }
 
+stock Admin_RescuePlayerToStaff(playerid, targetid)
+{
+    new Float:x;
+    new Float:y;
+    new Float:z;
+    new Float:angle;
+    new interior;
+    new world;
+    new vehicleid;
+    new targetName[MAX_PLAYER_NAME];
+    new adminName[MAX_PLAYER_NAME];
+    new message[144];
+
+    GetPlayerPos(playerid, x, y, z);
+    GetPlayerFacingAngle(playerid, angle);
+    interior = GetPlayerInterior(playerid);
+    world = GetPlayerVirtualWorld(playerid);
+
+    if (IsPlayerInAnyVehicle(targetid))
+    {
+        vehicleid = GetPlayerVehicleID(targetid);
+        if (vehicleid != INVALID_VEHICLE_ID)
+        {
+            SetVehiclePos(vehicleid, x + 2.0, y, z + 0.5);
+            SetVehicleZAngle(vehicleid, angle);
+            LinkVehicleToInterior(vehicleid, interior);
+            SetVehicleVirtualWorld(vehicleid, world);
+        }
+    }
+    else
+    {
+        SetPlayerPos(targetid, x + 1.5, y, z + 0.5);
+        SetPlayerFacingAngle(targetid, angle);
+    }
+
+    SetPlayerInterior(targetid, interior);
+    SetPlayerVirtualWorld(targetid, world);
+    TogglePlayerControllable(targetid, 1);
+    SetCameraBehindPlayer(targetid);
+    Security_GrantTeleportGrace(targetid);
+    gPlayerAutoInterior[targetid] = -1;
+    gPlayerInteriorMoveTick[targetid] = GetTickCount();
+
+    GetPlayerName(targetid, targetName, sizeof(targetName));
+    GetPlayerName(playerid, adminName, sizeof(adminName));
+    format(message, sizeof(message), "Jogador %s resgatado para perto de voce.", targetName);
+    SendClientMessage(playerid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "Voce foi resgatado por %s.", adminName);
+    SendClientMessage(targetid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "target=%d admin=%d pos=%.2f,%.2f,%.2f int=%d vw=%d", targetid, playerid, x, y, z, interior, world);
+    WritePlayerLog(LOG_ADMIN_FILE, "RESCUE_PLAYER", playerid, message);
+    return 1;
+}
+
 stock CreateAdminVehicle(playerid, modelid, color1, color2)
 {
     new vehicleid;
@@ -153,6 +207,130 @@ stock SendAdminLevelList(playerid)
     SendClientMessage(playerid, COLOR_ORANGE, "Niveis admin: 0 Jogador | 1 Helper Nivel 1 | 2 Helper Nivel 2");
     SendClientMessage(playerid, COLOR_ORANGE, "Niveis admin: 3 Administrador Nivel 1 | 4 Administrador Nivel 2 | 5 DONO");
     return 1;
+}
+
+stock Admin_SaveAllOnline()
+{
+    new count;
+    new maxPlayers = GetMaxPlayers();
+
+    for (new targetid = 0; targetid < maxPlayers; targetid++)
+    {
+        if (IsPlayerConnected(targetid) && PlayerInfo[targetid][pLogged])
+        {
+            SaveAccountData(targetid, 0);
+            count++;
+        }
+    }
+    return count;
+}
+
+stock Admin_SetPlayerLevel(playerid, targetid, value)
+{
+    new message[128];
+    new oldLevel;
+
+    if (!PlayerInfo[targetid][pLogged])
+    {
+        SendClientMessage(playerid, COLOR_RED, "O jogador precisa estar logado.");
+        return 1;
+    }
+
+    if (value < 1 || value > 999)
+    {
+        SendClientMessage(playerid, COLOR_RED, "Nivel permitido: 1 a 999.");
+        return 1;
+    }
+
+    oldLevel = PlayerInfo[targetid][pLevel];
+    PlayerInfo[targetid][pLevel] = value;
+    PlayerInfo[targetid][pExperience] = 0;
+    Account_ApplyNewcomerProtection(targetid);
+    SaveAccountData(targetid, 0);
+    UpdatePlayerHud(targetid);
+
+    format(message, sizeof(message), "Nivel do ID %d alterado de %d para %d.", targetid, oldLevel, value);
+    SendClientMessage(playerid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "Seu nivel geral foi alterado para %d pela administracao.", value);
+    SendClientMessage(targetid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "target=%d old=%d new=%d", targetid, oldLevel, value);
+    WritePlayerLog(LOG_ADMIN_FILE, "SET_LEVEL", playerid, message);
+    return 1;
+}
+
+stock Admin_SetAdminLevel(playerid, targetid, value)
+{
+    new message[128];
+    new rankName[32];
+    new oldLevel;
+
+    if (!PlayerInfo[targetid][pLogged])
+    {
+        SendClientMessage(playerid, COLOR_RED, "O jogador precisa estar logado.");
+        return 1;
+    }
+
+    if (value < 0 || value > ADMIN_LEVEL_OWNER)
+    {
+        SendClientMessage(playerid, COLOR_RED, "Nivel admin permitido: 0 a 5.");
+        SendAdminLevelList(playerid);
+        return 1;
+    }
+
+    oldLevel = PlayerInfo[targetid][pAdminLevel];
+    PlayerInfo[targetid][pAdminLevel] = value;
+    SaveAccountData(targetid, 0);
+    GetAdminLevelName(value, rankName, sizeof(rankName));
+
+    format(message, sizeof(message), "Voce definiu o admin de ID %d para %s (%d).", targetid, rankName, value);
+    SendClientMessage(playerid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "Seu nivel admin agora e %s (%d).", rankName, value);
+    SendClientMessage(targetid, COLOR_ORANGE, message);
+    format(message, sizeof(message), "target=%d old=%d new=%d", targetid, oldLevel, value);
+    WritePlayerLog(LOG_ADMIN_FILE, "SET_ADMIN", playerid, message);
+    return 1;
+}
+
+stock Admin_ExecuteGmx(playerid)
+{
+    new message[128];
+    new count;
+
+    if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+    {
+        return SendNoPermission(playerid);
+    }
+
+    count = Admin_SaveAllOnline();
+    format(message, sizeof(message), "[ADMIN] Reinicio da GM confirmado. Contas salvas: %d.", count);
+    SendClientMessageToAll(COLOR_ORANGE, message);
+    WritePlayerLog(LOG_ADMIN_FILE, "SERVER_GMX", playerid, message);
+    SendRconCommand("gmx");
+    return 1;
+}
+
+stock Admin_ShowGmxConfirm(playerid)
+{
+    if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+    {
+        return SendNoPermission(playerid);
+    }
+
+    ShowPlayerDialog(playerid, DIALOG_SERVER_GMX_CONFIRM, DIALOG_STYLE_MSGBOX, "Confirmar reinicio da GM", "Esta acao vai salvar as contas online e reiniciar a GM agora.\n\nUse somente quando estiver pronto para derrubar/recarregar o servidor.", "Confirmar", "Cancelar");
+    WritePlayerLog(LOG_ADMIN_FILE, "SERVER_GMX_CONFIRM_OPEN", playerid, "dialog_aberto");
+    return 1;
+}
+
+stock Admin_HandleGmxConfirmDialog(playerid, response)
+{
+    if (!response)
+    {
+        SendClientMessage(playerid, COLOR_GRAY, "Reinicio da GM cancelado.");
+        WritePlayerLog(LOG_ADMIN_FILE, "SERVER_GMX_CANCEL", playerid, "dialog_cancelado");
+        return 1;
+    }
+
+    return Admin_ExecuteGmx(playerid);
 }
 
 stock Owner_HandlePersistentCommands(playerid, cmdtext[])
@@ -1610,6 +1788,7 @@ stock ShowEditMapDialog(playerid)
     strcat(list, "Veiculo mais perto\tMostra ID do veiculo de frota proximo\n", sizeof(list));
     strcat(list, "Ajustar veiculo mais perto\tSalva a frota proxima na sua posicao/angulo\n", sizeof(list));
     strcat(list, "Salvar veiculo atual\tSalva onde esta o veiculo de frota que voce dirige\n", sizeof(list));
+    strcat(list, "Criar veiculo da minha profissao\tSalva o veiculo atual ou modelo padrao do seu emprego\n", sizeof(list));
     strcat(list, "Remover veiculo mais perto\tRemove a frota proxima e salva o arquivo\n", sizeof(list));
     strcat(list, "Criar objeto fixo\tAbre criador de objetos na sua posicao\n", sizeof(list));
     strcat(list, "Criar portao\tAbre criador de portoes na sua posicao\n", sizeof(list));
@@ -1623,6 +1802,40 @@ stock ShowEditMapDialog(playerid)
     strcat(list, "Recarregar frota\tRecarrega scriptfiles/job_vehicles.txt\n", sizeof(list));
     ShowPlayerDialog(playerid, DIALOG_EDIT_MAP_PANEL, DIALOG_STYLE_TABLIST_HEADERS, "Editor de mapa - Admin nivel 5", list, "Executar", "Fechar");
     return 1;
+}
+
+stock Admin_CreateCurrentJobVehicle(playerid)
+{
+    new jobid = PlayerInfo[playerid][pJob];
+    new jobIndex;
+    new modelid;
+
+    if (jobid <= JOB_NONE)
+    {
+        SendClientMessage(playerid, COLOR_RED, "Entre na profissao desejada antes de criar o veiculo de frota.");
+        return 1;
+    }
+
+    jobIndex = Job_GetIndex(jobid);
+    if (jobIndex == -1)
+    {
+        SendClientMessage(playerid, COLOR_RED, "Sua profissao atual nao permite frota configurada.");
+        return 1;
+    }
+
+    if (IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+    {
+        return JobVehicle_AddCommand(playerid, jobid, 0, 0, 0, FUEL_MAX_VALUE, 1);
+    }
+
+    modelid = gJobs[jobIndex][jobVehicleModel];
+    if (!JobVehicle_IsValidModel(modelid))
+    {
+        SendClientMessage(playerid, COLOR_RED, "Esta profissao nao tem modelo padrao. Entre dirigindo o veiculo que deseja salvar.");
+        return 1;
+    }
+
+    return JobVehicle_AddCommand(playerid, jobid, modelid, 0, 0, FUEL_MAX_VALUE, 0);
 }
 
 stock ShowTollCreateDialog(playerid)
@@ -1697,7 +1910,7 @@ stock HandleEditMapDialog(playerid, response, listitem)
         return SendNoPermission(playerid);
     }
 
-    if (listitem < 0 || listitem > 17)
+    if (listitem < 0 || listitem > 18)
     {
         SendClientMessage(playerid, COLOR_RED, "Opcao do editor expirada. Abra o menu novamente.");
         return ShowEditMapDialog(playerid);
@@ -1764,6 +1977,11 @@ stock HandleEditMapDialog(playerid, response, listitem)
         }
         case 7:
         {
+            Admin_CreateCurrentJobVehicle(playerid);
+            return ShowEditMapDialog(playerid);
+        }
+        case 8:
+        {
             vehicleSlot = JobVehicle_FindNearest(playerid, 35.0);
             if (vehicleSlot == -1)
             {
@@ -1773,33 +1991,33 @@ stock HandleEditMapDialog(playerid, response, listitem)
             JobVehicle_RemoveSlot(playerid, vehicleSlot);
             return ShowEditMapDialog(playerid);
         }
-        case 8:
+        case 9:
         {
             return MapObj_ShowStaticDialog(playerid);
         }
-        case 9:
+        case 10:
         {
             return MapObj_ShowGateDialog(playerid);
         }
-        case 10:
+        case 11:
         {
             return Prop_ShowEditHouseDlg(playerid);
         }
-        case 11:
+        case 12:
         {
             return Prop_ShowEditBizDlg(playerid);
         }
-        case 12:
+        case 13:
         {
             Property_EditorAddLocation(playerid, EDITOR_LOC_TYPE_FUEL, 0, EDITOR_LOC_PROFILE_GAS, "Posto criado");
             return ShowEditMapDialog(playerid);
         }
-        case 13:
+        case 14:
         {
             MapObj_SendNearest(playerid, -1);
             return ShowEditMapDialog(playerid);
         }
-        case 14:
+        case 15:
         {
             vehicleSlot = MapObj_FindNearest(playerid, 35.0, -1);
             if (vehicleSlot == -1)
@@ -1810,14 +2028,14 @@ stock HandleEditMapDialog(playerid, response, listitem)
             MapObj_RemoveSlot(playerid, vehicleSlot);
             return ShowEditMapDialog(playerid);
         }
-        case 15:
+        case 16:
         {
             Property_EditorLoadLocations();
             format(message, sizeof(message), "Locais do editor recarregados: %d.", gEditorLocCount);
             SendClientMessage(playerid, COLOR_GREEN, message);
             return ShowEditMapDialog(playerid);
         }
-        case 16:
+        case 17:
         {
             MapObj_LoadAll();
             format(message, sizeof(message), "Objetos do mapa recarregados: %d.", gMapObjCount);
@@ -1825,7 +2043,7 @@ stock HandleEditMapDialog(playerid, response, listitem)
             WritePlayerLog(LOG_ADMIN_FILE, "MAP_OBJECT_RELOAD", playerid, "edit map dialog reload");
             return ShowEditMapDialog(playerid);
         }
-        case 17:
+        case 18:
         {
             JobVehicle_LoadAll();
             format(message, sizeof(message), "Frota recarregada: %d veiculos.", gJobVehicleCount);
@@ -1853,6 +2071,13 @@ stock ShowAdminHelpDialog(playerid)
     strcat(body, "/checkserver - checklist pre-online exclusivo do DONO.\n", sizeof(body));
     strcat(body, "/debugmapa - mostra contadores do mapa/frota e linhas nos TXT.\n", sizeof(body));
     strcat(body, "/seguranca - painel de bans, alertas e logs.\n\n", sizeof(body));
+    strcat(body, "Controle DONO nivel 5:\n", sizeof(body));
+    strcat(body, "/setlevel, /darlevel, /tirarlevel - controla nivel geral do jogador.\n", sizeof(body));
+    strcat(body, "/setadmin, /daradmin, /tiraradmin - controla nivel admin 0-5.\n", sizeof(body));
+    strcat(body, "/salvartodos - salva todas as contas online.\n", sizeof(body));
+    strcat(body, "/trancarserver, /destrancarserver - controla senha de entrada.\n", sizeof(body));
+    strcat(body, "/corrigirpos ou /resgatar [id] - puxa jogador preso para perto do admin.\n", sizeof(body));
+    strcat(body, "/gmxserver ou /reiniciargm - salva contas e reinicia a GM.\n\n", sizeof(body));
     strcat(body, "Editor organizado - DONO nivel 5/RCON:\n", sizeof(body));
     strcat(body, "/editarmapa - abre menu para ajustar pedagios, frota, objetos e portoes.\n\n", sizeof(body));
     strcat(body, "Objetos e portoes do mapa - DONO nivel 5/RCON:\n", sizeof(body));
@@ -1886,6 +2111,7 @@ stock ShowAdminHelpDialog(playerid)
     strcat(body, "Veiculos de profissao - DONO nivel 5/RCON:\n", sizeof(body));
     strcat(body, "/jobveiculos - mostra frota carregada e arquivo usado.\n", sizeof(body));
     strcat(body, "/addjobveiculo [job] [modelo/atual] [cor1] [cor2] [fuel] - salva frota.\n", sizeof(body));
+    strcat(body, "/editarmapa > Criar veiculo da minha profissao - cria frota pelo menu.\n", sizeof(body));
     strcat(body, "/veiculomaisperto - mostra o ID da frota mais proxima.\n", sizeof(body));
     strcat(body, "/irveiculo ou /irjobveiculo - abre lista para teleportar ate carro de frota.\n", sizeof(body));
     strcat(body, "/ajustarveiculo [id] - salva a frota na sua posicao/angulo atual.\n", sizeof(body));
@@ -3918,7 +4144,19 @@ stock Admin_IsOperationalCommand(command[])
     {
         return 1;
     }
-    if (strcmp(command, "/cmdmodulos", true) == 0 || strcmp(command, "/balancegm", true) == 0 || strcmp(command, "/testarcomandos", true) == 0 || strcmp(command, "/modoemergenciacmd", true) == 0 || strcmp(command, "/setadmin", true) == 0)
+    if (strcmp(command, "/cmdmodulos", true) == 0 || strcmp(command, "/balancegm", true) == 0 || strcmp(command, "/testarcomandos", true) == 0 || strcmp(command, "/modoemergenciacmd", true) == 0 || strcmp(command, "/setadmin", true) == 0 || strcmp(command, "/daradmin", true) == 0 || strcmp(command, "/tiraradmin", true) == 0 || strcmp(command, "/removeadmin", true) == 0)
+    {
+        return 1;
+    }
+    if (strcmp(command, "/setlevel", true) == 0 || strcmp(command, "/darlevel", true) == 0 || strcmp(command, "/tirarlevel", true) == 0 || strcmp(command, "/salvartodos", true) == 0 || strcmp(command, "/gmxserver", true) == 0 || strcmp(command, "/reiniciargm", true) == 0)
+    {
+        return 1;
+    }
+    if (strcmp(command, "/trancarserver", true) == 0 || strcmp(command, "/lockserver", true) == 0 || strcmp(command, "/destrancarserver", true) == 0 || strcmp(command, "/unlockserver", true) == 0)
+    {
+        return 1;
+    }
+    if (strcmp(command, "/corrigirpos", true) == 0 || strcmp(command, "/resgatar", true) == 0)
     {
         return 1;
     }
@@ -3949,6 +4187,12 @@ stock Admin_IsOperationalCommand(command[])
     return 0;
 }
 
+stock Admin_IsSensitiveCommand(command[])
+{
+    return (strcmp(command, "/trancarserver", true) == 0
+        || strcmp(command, "/lockserver", true) == 0);
+}
+
 stock HandleAdminCommands(playerid, cmdtext[])
 {
     new command[32];
@@ -3960,14 +4204,20 @@ stock HandleAdminCommands(playerid, cmdtext[])
     new value;
     new color1;
     new color2;
-    new rankName[32];
 
     index = GetCommandName(cmdtext, command, sizeof(command));
     Dispatch_CommandTrace(playerid, command, "cadeia-admin", "entrada", "checking");
 
     if (Admin_IsOperationalCommand(command) && HasAdminLevel(playerid, ADMIN_LEVEL_HELPER))
     {
-        WritePlayerLog(LOG_ADMIN_FILE, "COMMAND", playerid, cmdtext);
+        if (Admin_IsSensitiveCommand(command))
+        {
+            WritePlayerLog(LOG_ADMIN_FILE, "COMMAND", playerid, command);
+        }
+        else
+        {
+            WritePlayerLog(LOG_ADMIN_FILE, "COMMAND", playerid, cmdtext);
+        }
     }
 
     if (strcmp(command, "/a", true) == 0)
@@ -4258,7 +4508,49 @@ stock HandleAdminCommands(playerid, cmdtext[])
         return 1;
     }
 
-    if (strcmp(command, "/setadmin", true) == 0)
+    if (strcmp(command, "/setlevel", true) == 0 || strcmp(command, "/darlevel", true) == 0 || strcmp(command, "/tirarlevel", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "level-admin", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+        {
+            return SendNoPermission(playerid);
+        }
+
+        if (!GetNextParam(cmdtext, index, param, sizeof(param)) || !GetNextParam(cmdtext, index, param2, sizeof(param2)))
+        {
+            return SendUsage(playerid, "/setlevel [id] [nivel] | /darlevel [id] [quantidade] | /tirarlevel [id] [quantidade]");
+        }
+
+        if (!ParseTargetPlayer(playerid, param, targetid) || !IsNumericString(param2))
+        {
+            return 1;
+        }
+
+        value = strval(param2);
+        if (strcmp(command, "/darlevel", true) == 0)
+        {
+            if (value <= 0)
+            {
+                return SendUsage(playerid, "/darlevel [id] [quantidade positiva]");
+            }
+            value = PlayerInfo[targetid][pLevel] + value;
+        }
+        else if (strcmp(command, "/tirarlevel", true) == 0)
+        {
+            if (value <= 0)
+            {
+                return SendUsage(playerid, "/tirarlevel [id] [quantidade positiva]");
+            }
+            value = PlayerInfo[targetid][pLevel] - value;
+            if (value < 1)
+            {
+                value = 1;
+            }
+        }
+        return Admin_SetPlayerLevel(playerid, targetid, value);
+    }
+
+    if (strcmp(command, "/setadmin", true) == 0 || strcmp(command, "/daradmin", true) == 0)
     {
         Dispatch_CommandTrace(playerid, command, "resultado", "setadmin", "handled");
         if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
@@ -4278,27 +4570,104 @@ stock HandleAdminCommands(playerid, cmdtext[])
         }
 
         value = strval(param2);
-        if (value < 0 || value > ADMIN_LEVEL_OWNER)
+        return Admin_SetAdminLevel(playerid, targetid, value);
+    }
+
+    if (strcmp(command, "/tiraradmin", true) == 0 || strcmp(command, "/removeadmin", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "tiraradmin", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
         {
-            SendClientMessage(playerid, COLOR_RED, "Nivel admin permitido: 0 a 5.");
-            SendAdminLevelList(playerid);
+            return SendNoPermission(playerid);
+        }
+
+        if (!GetNextParam(cmdtext, index, param, sizeof(param)))
+        {
+            return SendUsage(playerid, "/tiraradmin [id]");
+        }
+
+        if (!ParseTargetPlayer(playerid, param, targetid))
+        {
             return 1;
         }
 
-        if (!PlayerInfo[targetid][pLogged])
+        return Admin_SetAdminLevel(playerid, targetid, 0);
+    }
+
+    if (strcmp(command, "/salvartodos", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "salvar-todos", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
         {
-            SendClientMessage(playerid, COLOR_RED, "O jogador precisa estar logado.");
-            return 1;
+            return SendNoPermission(playerid);
         }
 
-        PlayerInfo[targetid][pAdminLevel] = value;
-        SaveAccountData(targetid);
-        GetAdminLevelName(value, rankName, sizeof(rankName));
-        format(message, sizeof(message), "Voce definiu o admin de ID %d para %s (%d).", targetid, rankName, value);
+        value = Admin_SaveAllOnline();
+        format(message, sizeof(message), "Contas online salvas: %d.", value);
         SendClientMessage(playerid, COLOR_ORANGE, message);
-        format(message, sizeof(message), "Seu nivel admin agora e %s (%d).", rankName, value);
-        SendClientMessage(targetid, COLOR_ORANGE, message);
+        WritePlayerLog(LOG_ADMIN_FILE, "SAVE_ALL", playerid, message);
         return 1;
+    }
+
+    if (strcmp(command, "/trancarserver", true) == 0 || strcmp(command, "/lockserver", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "lock-server", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+        {
+            return SendNoPermission(playerid);
+        }
+
+        if (!GetNextParam(cmdtext, index, param, sizeof(param)))
+        {
+            return SendUsage(playerid, "/trancarserver [senha]");
+        }
+
+        format(message, sizeof(message), "password %s", param);
+        SendRconCommand(message);
+        SendClientMessage(playerid, COLOR_ORANGE, "Servidor trancado com senha. A senha nao foi gravada no log.");
+        WritePlayerLog(LOG_ADMIN_FILE, "SERVER_LOCK", playerid, "password_set");
+        return 1;
+    }
+
+    if (strcmp(command, "/destrancarserver", true) == 0 || strcmp(command, "/unlockserver", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "unlock-server", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+        {
+            return SendNoPermission(playerid);
+        }
+
+        SendRconCommand("password 0");
+        SendClientMessage(playerid, COLOR_ORANGE, "Servidor destrancado.");
+        WritePlayerLog(LOG_ADMIN_FILE, "SERVER_UNLOCK", playerid, "password_cleared");
+        return 1;
+    }
+
+    if (strcmp(command, "/gmxserver", true) == 0 || strcmp(command, "/reiniciargm", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "gmx-server", "handled");
+        return Admin_ShowGmxConfirm(playerid);
+    }
+
+    if (strcmp(command, "/corrigirpos", true) == 0 || strcmp(command, "/resgatar", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "resultado", "resgate-player", "handled");
+        if (!HasAdminLevel(playerid, ADMIN_LEVEL_OWNER))
+        {
+            return SendNoPermission(playerid);
+        }
+
+        if (!GetNextParam(cmdtext, index, param, sizeof(param)))
+        {
+            return SendUsage(playerid, "/resgatar [id]");
+        }
+
+        if (!ParseTargetPlayer(playerid, param, targetid))
+        {
+            return 1;
+        }
+
+        return Admin_RescuePlayerToStaff(playerid, targetid);
     }
 
     if (strcmp(command, "/kick", true) == 0)
@@ -5262,6 +5631,21 @@ stock Dispatch_GetCommandRoute(command[], output[], size = sizeof(output))
         format(output, size, "central/admin");
         return 1;
     }
+    if (strcmp(command, "/setlevel", true) == 0 || strcmp(command, "/darlevel", true) == 0 || strcmp(command, "/tirarlevel", true) == 0 || strcmp(command, "/setadmin", true) == 0 || strcmp(command, "/daradmin", true) == 0 || strcmp(command, "/tiraradmin", true) == 0 || strcmp(command, "/removeadmin", true) == 0)
+    {
+        format(output, size, "owner/admin");
+        return 1;
+    }
+    if (strcmp(command, "/salvartodos", true) == 0 || strcmp(command, "/trancarserver", true) == 0 || strcmp(command, "/lockserver", true) == 0 || strcmp(command, "/destrancarserver", true) == 0 || strcmp(command, "/unlockserver", true) == 0 || strcmp(command, "/gmxserver", true) == 0 || strcmp(command, "/reiniciargm", true) == 0)
+    {
+        format(output, size, "owner/servidor");
+        return 1;
+    }
+    if (strcmp(command, "/corrigirpos", true) == 0 || strcmp(command, "/resgatar", true) == 0)
+    {
+        format(output, size, "owner/resgate");
+        return 1;
+    }
     if (strcmp(command, "/integridade", true) == 0 || strcmp(command, "/saudegm", true) == 0 || strcmp(command, "/releasecheck", true) == 0 || strcmp(command, "/selftestgm", true) == 0 || strcmp(command, "/statusserver", true) == 0 || strcmp(command, "/versao", true) == 0)
     {
         format(output, size, "integridade/admin");
@@ -5293,7 +5677,7 @@ stock Dispatch_AddCommandTestLine(list[], size, &okCount, &warnCount, command[],
 
 stock Dispatch_ShowCommandTest(playerid)
 {
-    new list[3072];
+    new list[4608];
     new summary[128];
     new okCount;
     new warnCount;
@@ -5373,6 +5757,22 @@ stock Dispatch_ShowCommandTest(playerid)
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/cmdfixpromover", "debug");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/cmdmodulos", "debug");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/balancegm", "debug");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/setlevel", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/darlevel", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/tirarlevel", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/setadmin", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/daradmin", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/tiraradmin", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/removeadmin", "owner/admin");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/salvartodos", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/trancarserver", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/lockserver", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/destrancarserver", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/unlockserver", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/gmxserver", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/reiniciargm", "owner/servidor");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/corrigirpos", "owner/resgate");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/resgatar", "owner/resgate");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/centralpolicia", "policia");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/resetcomandos", "debug");
 

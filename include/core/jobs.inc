@@ -369,15 +369,15 @@ new gWorkPoints[][eWorkPoint] =
     { ROUTE_PRF, "Acesso Norte LS", 1296.7400, -920.4600, 39.5781 },
     { ROUTE_PRF, "Retorno Posto PRF", 1428.0861, -964.7896, 37.0835 },
 
-    { ROUTE_POLICIA_FEDERAL, "QG Federal", 1391.7720, -1700.6690, 13.5395 },
+    { ROUTE_POLICIA_FEDERAL, "QG Federal", 326.2891, -1515.4176, 36.0325 },
     { ROUTE_POLICIA_FEDERAL, "Operacao Banco", 1461.2980, -1011.5210, 26.8438 },
     { ROUTE_POLICIA_FEDERAL, "Mandado Prefeitura", 1481.0690, -1771.0450, 18.7958 },
-    { ROUTE_POLICIA_FEDERAL, "Retorno Federal", 1391.7720, -1700.6690, 13.5395 },
+    { ROUTE_POLICIA_FEDERAL, "Retorno Federal", 326.2891, -1515.4176, 36.0325 },
 
-    { ROUTE_POLICIA_CIVIL, "Delegacia Civil", 1526.8700, -1677.8200, 13.5469 },
+    { ROUTE_POLICIA_CIVIL, "Delegacia Civil", 285.8905, -1601.2700, 32.8313 },
     { ROUTE_POLICIA_CIVIL, "Pericia Commerce", 1642.0890, -1715.3920, 13.5469 },
     { ROUTE_POLICIA_CIVIL, "Investigacao Idlewood", 1955.8470, -1768.6200, 13.5469 },
-    { ROUTE_POLICIA_CIVIL, "Retorno Civil", 1526.8700, -1677.8200, 13.5469 },
+    { ROUTE_POLICIA_CIVIL, "Retorno Civil", 285.8905, -1601.2700, 32.8313 },
 
     { ROUTE_POLICIA_PENAL, "QG Penal", 1595.8700, -1638.2200, 13.5469 },
     { ROUTE_POLICIA_PENAL, "Escolta Patio", 1591.8500, -1608.4100, 13.3828 },
@@ -424,10 +424,10 @@ new gWorkPoints[][eWorkPoint] =
     { ROUTE_SOCIAL, "Encaminhar Hospital", 1172.0360, -1323.5170, 15.4030 },
     { ROUTE_SOCIAL, "Retorno Social", 1481.0690, -1771.0450, 18.7958 },
 
-    { ROUTE_FORENSIC, "Laboratorio Civil", 1526.8700, -1677.8200, 13.5469 },
+    { ROUTE_FORENSIC, "Laboratorio Civil", 285.8905, -1601.2700, 32.8313 },
     { ROUTE_FORENSIC, "Coleta Evidencia", 1642.0890, -1715.3920, 13.5469 },
     { ROUTE_FORENSIC, "Laudo Hospital", 1172.0360, -1323.5170, 15.4030 },
-    { ROUTE_FORENSIC, "Retorno Laboratorio", 1526.8700, -1677.8200, 13.5469 },
+    { ROUTE_FORENSIC, "Retorno Laboratorio", 285.8905, -1601.2700, 32.8313 },
 
     { ROUTE_MARKET_STAFF, "Balcao Mercado", 1368.2140, -1279.8530, 13.5469 },
     { ROUTE_MARKET_STAFF, "Estoque Mercado", 1379.4000, -1284.3000, 13.5469 },
@@ -494,10 +494,10 @@ new gWorkPoints[][eWorkPoint] =
     { ROUTE_COURT_OFFICER, "Mandado Delegacia", 1554.9530, -1675.6580, 16.1953 },
     { ROUTE_COURT_OFFICER, "Retorno Forum", 1481.0690, -1771.0450, 18.7958 },
 
-    { ROUTE_CLERK, "Cartorio Policial", 1526.8700, -1677.8200, 13.5469 },
+    { ROUTE_CLERK, "Cartorio Policial", 285.8905, -1601.2700, 32.8313 },
     { ROUTE_CLERK, "Registro BO", 1554.9530, -1675.6580, 16.1953 },
     { ROUTE_CLERK, "Arquivo Forum", 1481.0690, -1771.0450, 18.7958 },
-    { ROUTE_CLERK, "Retorno Cartorio", 1526.8700, -1677.8200, 13.5469 }
+    { ROUTE_CLERK, "Retorno Cartorio", 285.8905, -1601.2700, 32.8313 }
 };
 
 new gWorkActive[MAX_PLAYERS];
@@ -2539,10 +2539,10 @@ stock JobVehicle_WriteDefaultFile()
     fwrite(file, "25|552|2344.4000|-1186.3000|27.9766|90.0000|6|1|100|0|0\r\n");
     fwrite(file, "26|599|1009.6000|-932.3000|42.1797|180.0000|0|1|100|0|0\r\n");
     fwrite(file, "26|598|1015.6000|-932.3000|42.1797|180.0000|0|1|100|0|0\r\n");
-    fwrite(file, "27|490|1398.5000|-1705.5000|13.5395|90.0000|0|0|100|0|0\r\n");
-    fwrite(file, "27|528|1398.5000|-1710.5000|13.5395|90.0000|0|0|100|0|0\r\n");
-    fwrite(file, "28|596|1537.2000|-1681.7000|13.5469|180.0000|0|1|100|0|0\r\n");
-    fwrite(file, "28|490|1537.2000|-1688.9000|13.5469|180.0000|0|0|100|0|0\r\n");
+    fwrite(file, "27|490|332.8619|-1512.9320|35.8671|135.0306|0|0|100|0|0\r\n");
+    fwrite(file, "27|528|325.6054|-1525.4171|35.7261|146.8502|0|0|100|0|0\r\n");
+    fwrite(file, "28|596|282.8905|-1604.2700|32.8313|183.5020|0|1|100|0|0\r\n");
+    fwrite(file, "28|490|288.8905|-1604.2700|32.8313|183.5020|0|0|100|0|0\r\n");
     fwrite(file, "29|427|1601.5000|-1642.5000|13.5469|180.0000|0|1|100|0|0\r\n");
     fwrite(file, "29|528|1606.5000|-1642.5000|13.5469|180.0000|0|0|100|0|0\r\n");
     fclose(file);
@@ -3350,6 +3350,13 @@ stock JobVehicle_OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
     }
 
     GetJobName(gJobVehicleJob[slot], jobLabel, sizeof(jobLabel));
+    if (IsAdminOwnerLevel(playerid))
+    {
+        format(message, sizeof(message), "Admin nivel 5: veiculo de trabalho %s liberado para uso.", jobLabel);
+        SendClientMessage(playerid, COLOR_YELLOW, message);
+        return 1;
+    }
+
     format(message, sizeof(message), "Veiculo de trabalho: %s. Bata ponto no emprego para usar.", jobLabel);
     SendClientMessage(playerid, COLOR_YELLOW, message);
     return 1;
@@ -3370,6 +3377,11 @@ stock JobVehicle_OnPlayerStateChange(playerid, newstate, oldstate)
     vehicleid = GetPlayerVehicleID(playerid);
     slot = JobVehicle_FindByVehicle(vehicleid);
     if (slot == -1)
+    {
+        return 0;
+    }
+
+    if (IsAdminOwnerLevel(playerid))
     {
         return 0;
     }
