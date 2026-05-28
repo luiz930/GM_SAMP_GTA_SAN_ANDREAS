@@ -389,7 +389,17 @@ stock Owner_HandlePersistentCommands(playerid, cmdtext[])
         return HandleJobCommands(playerid, cmdtext);
     }
 
-    if (strcmp(command, "/addjobveiculo", true) == 0 || strcmp(command, "/criarjobveiculo", true) == 0 || strcmp(command, "/salvarjobveiculo", true) == 0 || strcmp(command, "/removerjobveiculo", true) == 0 || strcmp(command, "/removerveiculo", true) == 0 || strcmp(command, "/irveiculo", true) == 0 || strcmp(command, "/irjobveiculo", true) == 0)
+    if (strcmp(command, "/addjobveiculo", true) == 0 || strcmp(command, "/criarjobveiculo", true) == 0 || strcmp(command, "/salvarjobveiculo", true) == 0)
+    {
+        return HandleJobCommands(playerid, cmdtext);
+    }
+
+    if (strcmp(command, "/veiculomaisperto", true) == 0 || strcmp(command, "/moverveiculomaisperto", true) == 0 || strcmp(command, "/ajustarveiculomaisperto", true) == 0)
+    {
+        return HandleJobCommands(playerid, cmdtext);
+    }
+
+    if (strcmp(command, "/removerjobveiculo", true) == 0 || strcmp(command, "/removerveiculo", true) == 0 || strcmp(command, "/irveiculo", true) == 0 || strcmp(command, "/irjobveiculo", true) == 0)
     {
         return HandleJobCommands(playerid, cmdtext);
     }
@@ -1700,7 +1710,7 @@ stock ShowHelpCategoryDialog(playerid, categoryid)
                 Help_AddLine(body, sizeof(body), "Editor DONO", "/editarmapa");
                 Help_AddLine(body, sizeof(body), "Mapa DONO", "/addobjeto, /addportao, /irobjeto, /irportao, /removerobjeto [id]");
                 Help_AddLine(body, sizeof(body), "Pedagios DONO", "/ajustarpedagio [id], /criarpedagio, /irpedagio, /removerpedagio [id]");
-                Help_AddLine(body, sizeof(body), "Frota DONO", "/ajustarveiculo [id], /irjobveiculo, /irveiculo, /removerjobveiculo [id]");
+                Help_AddLine(body, sizeof(body), "Frota DONO", "/ajustarveiculo [id], /moverveiculomaisperto, /removerjobveiculo [id], /veiculomaisperto");
                 Help_AddLine(body, sizeof(body), "Debug DONO", "/debugcomando [cmd], /debugcomandos, /modoemergenciacmd, /resetcomandos, /testarcomandos");
             }
         }
@@ -2113,6 +2123,7 @@ stock ShowAdminHelpDialog(playerid)
     strcat(body, "/addjobveiculo [job] [modelo/atual] [cor1] [cor2] [fuel] - salva frota.\n", sizeof(body));
     strcat(body, "/editarmapa > Criar veiculo da minha profissao - cria frota pelo menu.\n", sizeof(body));
     strcat(body, "/veiculomaisperto - mostra o ID da frota mais proxima.\n", sizeof(body));
+    strcat(body, "/moverveiculomaisperto - salva a frota mais proxima na sua posicao/angulo atual.\n", sizeof(body));
     strcat(body, "/irveiculo ou /irjobveiculo - abre lista para teleportar ate carro de frota.\n", sizeof(body));
     strcat(body, "/ajustarveiculo [id] - salva a frota na sua posicao/angulo atual.\n", sizeof(body));
     strcat(body, "/salvarveiculoatual - salva onde esta o veiculo de frota que voce dirige.\n", sizeof(body));
@@ -4352,7 +4363,19 @@ stock HandleAdminCommands(playerid, cmdtext[])
         return HandleJobCommands(playerid, cmdtext);
     }
 
-    if (strcmp(command, "/addjobveiculo", true) == 0 || strcmp(command, "/criarjobveiculo", true) == 0 || strcmp(command, "/salvarjobveiculo", true) == 0 || strcmp(command, "/removerjobveiculo", true) == 0 || strcmp(command, "/removerveiculo", true) == 0 || strcmp(command, "/irveiculo", true) == 0 || strcmp(command, "/irjobveiculo", true) == 0)
+    if (strcmp(command, "/addjobveiculo", true) == 0 || strcmp(command, "/criarjobveiculo", true) == 0 || strcmp(command, "/salvarjobveiculo", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "submodulo-admin", "job-veiculos", "direct");
+        return HandleJobCommands(playerid, cmdtext);
+    }
+
+    if (strcmp(command, "/veiculomaisperto", true) == 0 || strcmp(command, "/moverveiculomaisperto", true) == 0 || strcmp(command, "/ajustarveiculomaisperto", true) == 0)
+    {
+        Dispatch_CommandTrace(playerid, command, "submodulo-admin", "job-veiculos", "direct");
+        return HandleJobCommands(playerid, cmdtext);
+    }
+
+    if (strcmp(command, "/removerjobveiculo", true) == 0 || strcmp(command, "/removerveiculo", true) == 0 || strcmp(command, "/irveiculo", true) == 0 || strcmp(command, "/irjobveiculo", true) == 0)
     {
         Dispatch_CommandTrace(playerid, command, "submodulo-admin", "job-veiculos", "direct");
         return HandleJobCommands(playerid, cmdtext);
@@ -5722,6 +5745,8 @@ stock Dispatch_ShowCommandTest(playerid)
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/criarempresaedit", "editor");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/pedagio", "pedagios");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/criarpedagio", "pedagios");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/veiculomaisperto", "empregos");
+    Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/moverveiculomaisperto", "empregos");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/recarregar", "veiculos");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/cambio", "veiculos");
     Dispatch_AddCommandTestLine(list, sizeof(list), okCount, warnCount, "/emprego", "empregos");

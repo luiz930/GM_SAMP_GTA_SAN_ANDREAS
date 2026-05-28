@@ -2799,16 +2799,28 @@ stock JobVehicle_FindNearest(playerid, Float:range = 20.0)
 {
     new slot;
     new nearest = -1;
+    new vehicleid;
+    new playerInterior = GetPlayerInterior(playerid);
+    new playerWorld = GetPlayerVirtualWorld(playerid);
+    new Float:x;
+    new Float:y;
+    new Float:z;
     new Float:distance;
     new Float:bestDistance = 999999.0;
 
     for (slot = 0; slot < gJobVehicleCount; slot++)
     {
-        if (gJobVehicleId[slot] == INVALID_VEHICLE_ID || GetVehicleModel(gJobVehicleId[slot]) == 0)
+        vehicleid = gJobVehicleId[slot];
+        if (vehicleid == INVALID_VEHICLE_ID || GetVehicleModel(vehicleid) == 0)
         {
             continue;
         }
-        distance = GetPlayerDistanceFromPoint(playerid, gJobVehicleX[slot], gJobVehicleY[slot], gJobVehicleZ[slot]);
+        if (gJobVehicleInterior[slot] != playerInterior || GetVehicleVirtualWorld(vehicleid) != playerWorld)
+        {
+            continue;
+        }
+        GetVehiclePos(vehicleid, x, y, z);
+        distance = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if (distance <= range && distance < bestDistance)
         {
             nearest = slot;
@@ -2821,8 +2833,12 @@ stock JobVehicle_FindNearest(playerid, Float:range = 20.0)
 stock JobVehicle_SendNearest(playerid)
 {
     new slot = JobVehicle_FindNearest(playerid, 35.0);
+    new vehicleid;
     new jobLabel[32];
     new message[160];
+    new Float:x;
+    new Float:y;
+    new Float:z;
 
     if (slot == -1)
     {
@@ -2830,11 +2846,25 @@ stock JobVehicle_SendNearest(playerid)
         return 1;
     }
 
+    vehicleid = gJobVehicleId[slot];
+    GetVehiclePos(vehicleid, x, y, z);
     GetJobName(gJobVehicleJob[slot], jobLabel, sizeof(jobLabel));
-    format(message, sizeof(message), "Veiculo mais perto: ID %d | %s | modelo %d | %.1fm.", slot + 1, jobLabel, gJobVehicleModel[slot], GetPlayerDistanceFromPoint(playerid, gJobVehicleX[slot], gJobVehicleY[slot], gJobVehicleZ[slot]));
+    format(message, sizeof(message), "Veiculo mais perto: ID %d | %s | modelo %d | %.1fm.", slot + 1, jobLabel, gJobVehicleModel[slot], GetPlayerDistanceFromPoint(playerid, x, y, z));
     SendClientMessage(playerid, COLOR_YELLOW, message);
-    SendClientMessage(playerid, COLOR_GRAY, "Use /ajustarveiculo [id] para salvar esse veiculo na sua posicao atual.");
+    SendClientMessage(playerid, COLOR_GRAY, "Use /moverveiculomaisperto ou /ajustarveiculo [id] para salvar na sua posicao.");
     return 1;
+}
+
+stock JobVehicle_AdjustNearest(playerid)
+{
+    new slot = JobVehicle_FindNearest(playerid, 35.0);
+
+    if (slot == -1)
+    {
+        SendClientMessage(playerid, COLOR_ORANGE, "Nenhum veiculo de frota encontrado perto de voce.");
+        return 1;
+    }
+    return JobVehicle_AdjustSlot(playerid, slot, 0);
 }
 
 stock JobVehicle_AdjustSlot(playerid, slot, useVehiclePosition = 0)
@@ -2956,9 +2986,10 @@ stock JobVehicle_GotoSlot(playerid, slot)
         return SendUsage(playerid, "/irveiculo [id]");
     }
 
-    x = gJobVehicleX[slot] + 2.0;
-    y = gJobVehicleY[slot] + 2.0;
-    z = gJobVehicleZ[slot] + 1.0;
+    GetVehiclePos(gJobVehicleId[slot], x, y, z);
+    x += 2.0;
+    y += 2.0;
+    z += 1.0;
     if (IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
     {
         SetVehiclePos(GetPlayerVehicleID(playerid), x, y, z);
@@ -6268,7 +6299,7 @@ stock HandleJobCommands(playerid, cmdtext[])
         format(message, sizeof(message), "Veiculos de profissao carregados: %d/%d. Arquivo: %s.", gJobVehicleCount, MAX_JOB_CONFIG_VEHICLES, JOB_VEHICLES_FILE);
         SendClientMessage(playerid, COLOR_YELLOW, message);
         SendClientMessage(playerid, COLOR_GRAY, "Criar: /addjobveiculo [job] [modelo/atual] [cor1] [cor2] [fuel]");
-        SendClientMessage(playerid, COLOR_GRAY, "Ajustar: /veiculomaisperto, /ajustarveiculo [id] ou /salvarveiculoatual.");
+        SendClientMessage(playerid, COLOR_GRAY, "Ajustar: /veiculomaisperto, /moverveiculomaisperto, /ajustarveiculo [id] ou /salvarveiculoatual.");
         SendClientMessage(playerid, COLOR_GRAY, "Remover: /removerjobveiculo [id] ou /removerveiculo [id].");
         return 1;
     }
@@ -6281,6 +6312,11 @@ stock HandleJobCommands(playerid, cmdtext[])
             return 1;
         }
         return JobVehicle_SendNearest(playerid);
+    }
+
+    if (strcmp(command, "/moverveiculomaisperto", true) == 0 || strcmp(command, "/ajustarveiculomaisperto", true) == 0 || strcmp(command, "/reposicionarveiculomaisperto", true) == 0 || strcmp(command, "/setveiculomaisperto", true) == 0)
+    {
+        return JobVehicle_AdjustNearest(playerid);
     }
 
     if (strcmp(command, "/ajustarveiculo", true) == 0 || strcmp(command, "/reposicionarveiculo", true) == 0 || strcmp(command, "/setveiculo", true) == 0)
